@@ -1,1 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio IA v9.2 - Production</title>
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1115466456772947" crossorigin="anonymous"></script>
 
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-color: #2563eb;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background-color: var(--bg-light);
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* ----- SYSTÈME DE PUBLICITÉ DE DÉMARRAGE (SPLASH SCREEN) ----- */
+        #splash-ad-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0b0f19;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        .splash-ad-container {
+            width: 90%;
+            max-width: 400px;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid #334155;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+        }
+
+        .splash-ad-box {
+            width: 100%;
+            height: 250px;
+            background: #0f172a;
+            border-radius: 12px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border: 1px dashed #475569;
+        }
+
+        .splash-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .splash-btn:disabled {
+            background: #475569;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* ------------------------------------------------------------- */
+
+        .ad-space {
+            width: 100%;
+            max-width: 460px;
+            min-height: 90px;
+            background: #f1f5f9;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .ad-top { margin-bottom: 20px; }
+        .ad-bottom { margin-top: 25px; }
+
+        .container { 
+            width: 100%;
+            max-width: 460px; 
+            background: var(--card-bg); 
+            padding: 35px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        #target { display: none; }
+        
+        .canvas-display { 
+            margin: 0 auto 25px auto; 
+            position: relative;
+            display: block;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        canvas#robot { 
+            border-radius: 16px; 
+            background: #f1f5f9; 
+            border: 1px solid var(--border-color);
+            width: 100%; 
+            height: auto;
+            display: block;
+        }
+
+        #barContainer { 
+            width: 100%; 
+            background: #f1f5f9; 
+            height: 5px; 
+            border-radius: 10px; 
+            margin-bottom: 25px; 
+            overflow: hidden; 
+        }
+
+        #bar { 
+            height: 100%; 
+            width: 0%; 
+            background: var(--accent-color); 
+            transition: width 0.2s ease-out; 
+        }
+
+        .controls { 
+            display: flex; 
+            gap: 10px; 
+            width: 100%; 
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+
+        input#cmd { 
+            flex: 1; 
+            padding: 10px 12px; 
+            border-radius: 10px; 
+            border: none; 
+            background: transparent; 
+            color: var(--text-main); 
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        button { 
+            padding: 10px 22px; 
+            background: var(--text-main); 
+            color: #ffffff; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        button:hover { background: #1e293b; }
+        .hidden-file { display: none; }
+        #status { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; min-height: 1.2em; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div id="splash-ad-screen">
+    <div class="splash-ad-container">
+        <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase; letter-spacing:1px;">Sponsorisé</div>
+        
+        <div class="splash-ad-box">
+            <ins class="adsbygoogle"
+                 style="display:inline-block;width:300px;height:250px"
+                 data-ad-client="ca-pub-1115466456772947"
+                 data-ad-slot="8651227812"
+                 data-ad-format="rectangle"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <button id="skip-btn" class="splash-btn" disabled>Patientez (5s)...</button>
+    </div>
+</div>
+
+<div class="ad-space ad-top">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-1115466456772947"
+         data-ad-slot="METS_ICI_LE_NUMERO_DE_SLOT_HAUT"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+
+<div class="container">
+    <h1>Studio IA Cloud</h1>
+    <div class="subtitle">Génération &amp; Tracé en temps réel</div>
+    
+    <div id="status">Prêt pour votre prompt...</div>
+    <div id="barContainer"><div id="bar"></div></div>
+
+    <div class="canvas-display">
+        <canvas id="robot" width="400" height="400"></canvas>
+        <canvas id="target" width="400" height="400"></canvas>
+    </div>
+
+    <div class="controls">
+        <input type="file" id="fileInput" class="hidden-file" accept="image/*">
+        <button style="background:none; color:var(--text-main); border:1px solid var(--border-color);" onclick="document.getElementById('fileInput').click()">📁</button>
+        <input id="cmd" placeholder="Ex: cat with a top hat...">
+        <button id="send">Générer</button>
+    </div>
+</div>
+
+<div class="ad-space ad-bottom">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-1115466456772947"
+         data-ad-slot="METS_ICI_LE_NUMERO_DE_SLOT_BAS"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+
+<script>
+// ----- GESTION DU COMPTE À REBOURS DE LA PUB DE DÉMARRAGE -----
+let timeLeft = 5;
+const skipBtn = document.getElementById("skip-btn");
+const splashScreen = document.getElementById("splash-ad-screen");
+
+const countdown = setInterval(() => {
+    timeLeft--;
+    if (timeLeft > 0) {
+        skipBtn.textContent = `Patientez (${timeLeft}s)...`;
+    } else {
+        clearInterval(countdown);
+        skipBtn.textContent = "Passer l'annonce ➔";
+        skipBtn.disabled = false;
+    }
+}, 1000);
+
+skipBtn.addEventListener("click", () => {
+    splashScreen.style.display = "none"; // Ferme la pub et affiche l'application
+});
+// ---------------------------------------------------------------
+
+const SIZE = 400;
+const targetCanvas = document.getElementById("target");
+const robotCanvas = document.getElementById("robot");
+const tctx = targetCanvas.getContext("2d", { willReadFrequently: true });
+const rctx = robotCanvas.getContext("2d");
+const bar = document.getElementById("bar");
+const statusDiv = document.getElementById("status");
+
+let targetData = null;
+let progress = 0;
+let isRunning = false;
+let animationId = null;
+
+let cloudProgress = 0;
+let cloudInterval = null;
+
+function startCloudLoadingBar() {
+    cloudProgress = 0;
+    bar.style.width = "0%";
+    cloudInterval = setInterval(() => {
+        if (cloudProgress < 90) {
+            cloudProgress += Math.random() * 7;
+        } else if (cloudProgress < 98) {
+            cloudProgress += 0.5;
+        }
+        bar.style.width = Math.min(98, cloudProgress) + "%";
+    }, 150);
+}
+
+function stopCloudLoadingBar() {
+    clearInterval(cloudInterval);
+    bar.style.width = "100%";
+}
+
+function paint() {
+    if (!isRunning) return;
+
+    for(let i=0; i<250; i++) {
+        let x = Math.floor(Math.random() * SIZE);
+        let y = Math.floor(Math.random() * SIZE);
+        let idx = (y * SIZE + x) * 4;
+
+        if (!targetData) continue;
+
+        let r = targetData[idx];
+        let g = targetData[idx+1];
+        let b = targetData[idx+2];
+
+        r = (r - 128) * 1.15 + 128;
+        g = (g - 128) * 1.15 + 128;
+        b = (b - 128) * 1.15 + 128;
+
+        let avg = (r + g + b) / 3;
+        r = r * 0.85 + avg * 0.15;
+        g = g * 0.85 + avg * 0.15;
+        b = b * 0.85 + avg * 0.15;
+
+        r = Math.max(0, Math.min(255, r));
+        g = Math.max(0, Math.min(255, g));
+        b = Math.max(0, Math.min(255, b));
+
+        rctx.strokeStyle = `rgb(${Math.floor(r)},${Math.floor(g)},${Math.floor(b)})`;
+        rctx.lineWidth = 1.5; 
+        rctx.globalAlpha = 0.4; 
+
+        rctx.beginPath();
+        rctx.moveTo(x, y);
+        rctx.lineTo(x + (Math.random()-0.5)*3, y + (Math.random()-0.5)*3);
+        rctx.stroke();
+    }
+
+    progress += 0.0005; 
+    bar.style.width = Math.min(100, progress * 100) + "%";
+
+    if (progress < 1) {
+        animationId = requestAnimationFrame(paint);
+    } else {
+        statusDiv.textContent = "Génération et peinture terminées !";
+        isRunning = false;
+    }
+}
+
+function startCloudGeneration(promptText) {
+    isRunning = false;
+    cancelAnimationFrame(animationId);
+    
+    statusDiv.textContent = "Calcul des matrices dans le cloud... (Étape 1/2)";
+    startCloudLoadingBar();
+    
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    
+    let cleanPrompt = promptText.trim()
+        .replace(/é|è|ê|ë/g, "e")
+        .replace(/à|â/g, "a")
+        .replace(/ù|û/g, "u")
+        .replace(/ç/g, "c");
+
+    const urlPrompt = encodeURIComponent(cleanPrompt);
+    const uniqueSeed = Math.floor(Math.random() * 9999999) + "_" + Date.now();
+    
+    img.src = `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&nologo=true&model=flux&seed=${uniqueSeed}`;
+
+    img.onload = () => {
+        stopCloudLoadingBar();
+        
+        setTimeout(() => {
+            tctx.clearRect(0,0,SIZE,SIZE);
+            tctx.drawImage(img, 0, 0, SIZE, SIZE);
+            targetData = tctx.getImageData(0,0,SIZE,SIZE).data;
+            rctx.globalAlpha = 1.0;
+            rctx.fillStyle = "#ffffff";
+            rctx.fillRect(0,0,SIZE,SIZE);
+            progress = 0;
+            isRunning = true;
+            statusDiv.textContent = "Retranscription des pixels... (Étape 2/2)";
+            paint();
+        }, 300);
+    };
+
+    img.onerror = () => {
+        clearInterval(cloudInterval);
+        bar.style.width = "0%";
+        statusDiv.textContent = "❌ Le cloud a rejeté la demande. Réessayez.";
+    };
+}
+
+document.getElementById("send").addEventListener("click", () => {
+    const val = document.getElementById("cmd").value;
+    if (val.trim() !== "") {
+        startCloudGeneration(val);
+    }
+    document.getElementById("cmd").value = "";
+});
+
+function handleFile(img) {
+    isRunning = false;
+    cancelAnimationFrame(animationId);
+    tctx.clearRect(0,0,SIZE,SIZE);
+    let ratio = Math.max(SIZE / img.width, SIZE / img.height);
+    let nw = img.width * ratio;
+    let nh = img.height * ratio;
+    tctx.drawImage(img, (SIZE - nw) / 2, (SIZE - nh) / 2, nw, nh);
+    targetData = tctx.getImageData(0,0,SIZE,SIZE).data;
+    rctx.fillStyle = "#ffffff";
+    rctx.fillRect(0,0,SIZE,SIZE);
+    progress = 0; isRunning = true; paint();
+}
+
+document.getElementById("fileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => handleFile(img);
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+</body>
+</html>
