@@ -17,6 +17,12 @@
             --text-muted: #64748b;
         }
 
+        /* Bloque le défilement de l'application au démarrage tant que la pub est là */
+        body.ad-active {
+            overflow: hidden !important;
+            height: 100vh !important;
+        }
+
         body { 
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
             background-color: var(--bg-light);
@@ -30,21 +36,22 @@
             box-sizing: border-box;
         }
 
-        /* ----- SYSTÈME DE PUBLICITÉ DE DÉMARRAGE (SPLASH SCREEN) ----- */
+        /* ----- SYSTÈME DE PUBLICITÉ DE DÉMARRAGE VERROUILLÉ ----- */
         #splash-ad-screen {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             background-color: #0b0f19;
-            z-index: 9999;
+            z-index: 999999; /* Priorité maximale absolue pour empêcher le bypass */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: #ffffff;
             font-family: sans-serif;
+            touch-action: none; /* Bloque les gestes tactiles sur l'arrière-plan */
         }
 
         .splash-ad-container {
@@ -82,6 +89,7 @@
             cursor: pointer;
             font-size: 1rem;
             transition: background 0.2s;
+            width: 100%;
         }
 
         .splash-btn:disabled {
@@ -203,7 +211,7 @@
         #status { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; min-height: 1.2em; font-weight: 500; }
     </style>
 </head>
-<body>
+<body class="ad-active">
 
 <div id="splash-ad-screen">
     <div class="splash-ad-container">
@@ -269,10 +277,15 @@
 </div>
 
 <script>
-// ----- GESTION DU COMPTE À REBOURS DE LA PUB DE DÉMARRAGE -----
+// ----- GESTION DU COMPTE À REBOURS ET BLOCAGE -----
 let timeLeft = 5;
 const skipBtn = document.getElementById("skip-btn");
 const splashScreen = document.getElementById("splash-ad-screen");
+
+// Empêche le défilement tactile sur l'écran noir
+splashScreen.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+}, { passive: false });
 
 const countdown = setInterval(() => {
     timeLeft--;
@@ -286,7 +299,8 @@ const countdown = setInterval(() => {
 }, 1000);
 
 skipBtn.addEventListener("click", () => {
-    splashScreen.style.display = "none"; // Ferme la pub et affiche l'application
+    splashScreen.style.display = "none"; // Masque l'écran noir
+    document.body.classList.remove("ad-active"); // Débloque le défilement de l'application
 });
 // ---------------------------------------------------------------
 
