@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studio IA v9.2 - Production</title>
     
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1115466456772947" crossorigin="anonymous"></script>
+    <meta name="monetag" content="d5253df513cd2b45af3ba5366ae0a17e">
 
     <style>
         :root {
@@ -17,7 +17,6 @@
             --text-muted: #64748b;
         }
 
-        /* Bloque le défilement de l'application au démarrage tant que la pub est là */
         body.ad-active {
             overflow: hidden !important;
             height: 100vh !important;
@@ -36,7 +35,7 @@
             box-sizing: border-box;
         }
 
-        /* ----- SYSTÈME DE PUBLICITÉ DE DÉMARRAGE VERROUILLÉ ----- */
+        /* ----- ÉCRAN DE PUB DE DÉMARRAGE ----- */
         #splash-ad-screen {
             position: fixed;
             top: 0;
@@ -44,14 +43,14 @@
             width: 100%;
             height: 100%;
             background-color: #0b0f19;
-            z-index: 999999; /* Priorité maximale absolue pour empêcher le bypass */
+            z-index: 999999; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: #ffffff;
             font-family: sans-serif;
-            touch-action: none; /* Bloque les gestes tactiles sur l'arrière-plan */
+            touch-action: none; 
         }
 
         .splash-ad-container {
@@ -98,8 +97,7 @@
             cursor: not-allowed;
         }
 
-        /* ------------------------------------------------------------- */
-
+        /* ----- BLOCS DE PUB CLASSIQUES ----- */
         .ad-space {
             width: 100%;
             max-width: 460px;
@@ -109,10 +107,14 @@
             border-radius: 12px;
             box-sizing: border-box;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .ad-top { margin-bottom: 20px; }
         .ad-bottom { margin-top: 25px; }
 
+        /* ----- INTERFACE APPLICATION ----- */
         .container { 
             width: 100%;
             max-width: 460px; 
@@ -124,19 +126,8 @@
             border: 1px solid var(--border-color);
         }
 
-        h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin: 0 0 8px 0;
-            color: var(--text-main);
-        }
-
-        .subtitle {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-        }
-
+        h1 { font-size: 1.6rem; font-weight: 700; margin: 0 0 8px 0; color: var(--text-main); }
+        .subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 30px; }
         #target { display: none; }
         
         .canvas-display { 
@@ -156,21 +147,8 @@
             display: block;
         }
 
-        #barContainer { 
-            width: 100%; 
-            background: #f1f5f9; 
-            height: 5px; 
-            border-radius: 10px; 
-            margin-bottom: 25px; 
-            overflow: hidden; 
-        }
-
-        #bar { 
-            height: 100%; 
-            width: 0%; 
-            background: var(--accent-color); 
-            transition: width 0.2s ease-out; 
-        }
+        #barContainer { width: 100%; background: #f1f5f9; height: 5px; border-radius: 10px; margin-bottom: 25px; overflow: hidden; }
+        #bar { height: 100%; width: 0%; background: var(--accent-color); transition: width 0.2s ease-out; }
 
         .controls { 
             display: flex; 
@@ -218,31 +196,14 @@
         <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase; letter-spacing:1px;">Sponsorisé</div>
         
         <div class="splash-ad-box">
-            <ins class="adsbygoogle"
-                 style="display:inline-block;width:300px;height:250px"
-                 data-ad-client="ca-pub-1115466456772947"
-                 data-ad-slot="8651227812"
-                 data-ad-format="rectangle"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
+            </div>
 
-        <button id="skip-btn" class="splash-btn" disabled>Patientez (5s)...</button>
+        <button id="skip-btn" class="splash-btn" disabled>Préparation de l'application...</button>
     </div>
 </div>
 
 <div class="ad-space ad-top">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-1115466456772947"
-         data-ad-slot="METS_ICI_LE_NUMERO_DE_SLOT_HAUT"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</div>
+    </div>
 
 <div class="container">
     <h1>Studio IA Cloud</h1>
@@ -265,45 +226,39 @@
 </div>
 
 <div class="ad-space ad-bottom">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-1115466456772947"
-         data-ad-slot="METS_ICI_LE_NUMERO_DE_SLOT_BAS"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</div>
+    </div>
 
 <script>
-// ----- GESTION DU COMPTE À REBOURS ET BLOCAGE -----
-let timeLeft = 5;
+// ----- GESTION DU COMPTE À REBOURS -----
 const skipBtn = document.getElementById("skip-btn");
 const splashScreen = document.getElementById("splash-ad-screen");
 
-// Empêche le défilement tactile sur l'écran noir
 splashScreen.addEventListener('touchmove', function(e) {
     e.preventDefault();
 }, { passive: false });
 
-const countdown = setInterval(() => {
-    timeLeft--;
-    if (timeLeft > 0) {
-        skipBtn.textContent = `Patientez (${timeLeft}s)...`;
-    } else {
-        clearInterval(countdown);
-        skipBtn.textContent = "Passer l'annonce ➔";
-        skipBtn.disabled = false;
-    }
-}, 1000);
+window.addEventListener('load', () => {
+    let timeLeft = 5;
+    skipBtn.textContent = `Publicité (${timeLeft}s)...`;
+
+    const countdown = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+            skipBtn.textContent = `Publicité (${timeLeft}s)...`;
+        } else {
+            clearInterval(countdown);
+            skipBtn.textContent = "Accéder à l'application ➔";
+            skipBtn.disabled = false;
+        }
+    }, 1000);
+});
 
 skipBtn.addEventListener("click", () => {
-    splashScreen.style.display = "none"; // Masque l'écran noir
-    document.body.classList.remove("ad-active"); // Débloque le défilement de l'application
+    splashScreen.style.display = "none"; 
+    document.body.classList.remove("ad-active"); 
 });
-// ---------------------------------------------------------------
 
+// ----- LOGIQUE TECHNIQUE DU GÉNÉRATEUR D'IMAGES -----
 const SIZE = 400;
 const targetCanvas = document.getElementById("target");
 const robotCanvas = document.getElementById("robot");
@@ -316,7 +271,6 @@ let targetData = null;
 let progress = 0;
 let isRunning = false;
 let animationId = null;
-
 let cloudProgress = 0;
 let cloudInterval = null;
 
@@ -324,11 +278,8 @@ function startCloudLoadingBar() {
     cloudProgress = 0;
     bar.style.width = "0%";
     cloudInterval = setInterval(() => {
-        if (cloudProgress < 90) {
-            cloudProgress += Math.random() * 7;
-        } else if (cloudProgress < 98) {
-            cloudProgress += 0.5;
-        }
+        if (cloudProgress < 90) { cloudProgress += Math.random() * 7; } 
+        else if (cloudProgress < 98) { cloudProgress += 0.5; }
         bar.style.width = Math.min(98, cloudProgress) + "%";
     }, 150);
 }
@@ -383,13 +334,20 @@ function paint() {
     } else {
         statusDiv.textContent = "Génération et peinture terminées !";
         isRunning = false;
+        
+        // ---- ENVOI DU SIGNAL "+1" AU COMPTEUR GOOGLE SHEETS ----
+        const SCRIPT_URL = "METS_ICI_TON_URL_SCRIPT_GOOGLE_SI_TU_L_AS";
+        if(SCRIPT_URL !== "METS_ICI_TON_URL_SCRIPT_GOOGLE_SI_TU_L_AS") {
+            fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/x-www-form-urlencoded" } })
+            .then(() => console.log("Statistique synchronisée."))
+            .catch(err => console.error(err));
+        }
     }
 }
 
 function startCloudGeneration(promptText) {
     isRunning = false;
     cancelAnimationFrame(animationId);
-    
     statusDiv.textContent = "Calcul des matrices dans le cloud... (Étape 1/2)";
     startCloudLoadingBar();
     
@@ -397,19 +355,15 @@ function startCloudGeneration(promptText) {
     img.crossOrigin = "anonymous";
     
     let cleanPrompt = promptText.trim()
-        .replace(/é|è|ê|ë/g, "e")
-        .replace(/à|â/g, "a")
-        .replace(/ù|û/g, "u")
-        .replace(/ç/g, "c");
+        .replace(/é|è|ê|ë/g, "e").replace(/à|â/g, "a")
+        .replace(/ù|û/g, "u").replace(/ç/g, "c");
 
     const urlPrompt = encodeURIComponent(cleanPrompt);
     const uniqueSeed = Math.floor(Math.random() * 9999999) + "_" + Date.now();
-    
     img.src = `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&nologo=true&model=flux&seed=${uniqueSeed}`;
 
     img.onload = () => {
         stopCloudLoadingBar();
-        
         setTimeout(() => {
             tctx.clearRect(0,0,SIZE,SIZE);
             tctx.drawImage(img, 0, 0, SIZE, SIZE);
@@ -433,23 +387,18 @@ function startCloudGeneration(promptText) {
 
 document.getElementById("send").addEventListener("click", () => {
     const val = document.getElementById("cmd").value;
-    if (val.trim() !== "") {
-        startCloudGeneration(val);
-    }
+    if (val.trim() !== "") { startCloudGeneration(val); }
     document.getElementById("cmd").value = "";
 });
 
 function handleFile(img) {
-    isRunning = false;
-    cancelAnimationFrame(animationId);
+    isRunning = false; cancelAnimationFrame(animationId);
     tctx.clearRect(0,0,SIZE,SIZE);
     let ratio = Math.max(SIZE / img.width, SIZE / img.height);
-    let nw = img.width * ratio;
-    let nh = img.height * ratio;
+    let nw = img.width * ratio; let nh = img.height * ratio;
     tctx.drawImage(img, (SIZE - nw) / 2, (SIZE - nh) / 2, nw, nh);
     targetData = tctx.getImageData(0,0,SIZE,SIZE).data;
-    rctx.fillStyle = "#ffffff";
-    rctx.fillRect(0,0,SIZE,SIZE);
+    rctx.fillStyle = "#ffffff"; rctx.fillRect(0,0,SIZE,SIZE);
     progress = 0; isRunning = true; paint();
 }
 
