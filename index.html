@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA v9.2 - Production</title>
+    <title>Studio IA v9.3 - Production</title>
     
-    <meta name="monetag" content="d5253df513cd2b45af3ba5366ae0a17e">
-
     <style>
         :root {
             --bg-light: #f8fafc;
@@ -15,11 +13,6 @@
             --accent-color: #2563eb;
             --text-main: #0f172a;
             --text-muted: #64748b;
-        }
-
-        body.ad-active {
-            overflow: hidden !important;
-            height: 100vh !important;
         }
 
         body { 
@@ -35,86 +28,6 @@
             box-sizing: border-box;
         }
 
-        /* ----- ÉCRAN DE PUB DE DÉMARRAGE ----- */
-        #splash-ad-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0b0f19;
-            z-index: 999999; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #ffffff;
-            font-family: sans-serif;
-            touch-action: none; 
-        }
-
-        .splash-ad-container {
-            width: 90%;
-            max-width: 400px;
-            background: #1e293b;
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            border: 1px solid #334155;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
-        }
-
-        .splash-ad-box {
-            width: 100%;
-            height: 250px;
-            background: #0f172a;
-            border-radius: 12px;
-            margin: 15px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            border: 1px dashed #475569;
-        }
-
-        .splash-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.2s;
-            width: 100%;
-        }
-
-        .splash-btn:disabled {
-            background: #475569;
-            color: #94a3b8;
-            cursor: not-allowed;
-        }
-
-        /* ----- BLOCS DE PUB CLASSIQUES ----- */
-        .ad-space {
-            width: 100%;
-            max-width: 460px;
-            min-height: 90px;
-            background: #f1f5f9;
-            border: 1px dashed #cbd5e1;
-            border-radius: 12px;
-            box-sizing: border-box;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .ad-top { margin-bottom: 20px; }
-        .ad-bottom { margin-top: 25px; }
-
-        /* ----- INTERFACE APPLICATION ----- */
         .container { 
             width: 100%;
             max-width: 460px; 
@@ -124,6 +37,7 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             text-align: center;
             border: 1px solid var(--border-color);
+            margin-top: 20px;
         }
 
         h1 { font-size: 1.6rem; font-weight: 700; margin: 0 0 8px 0; color: var(--text-main); }
@@ -187,26 +101,23 @@
         button:hover { background: #1e293b; }
         .hidden-file { display: none; }
         #status { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; min-height: 1.2em; font-weight: 500; }
+        
+        .report-btn {
+            margin-top: 20px;
+            background: none;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+        .report-btn:hover { background: #f1f5f9; color: var(--text-main); }
     </style>
 </head>
-<body class="ad-active">
-
-<div id="splash-ad-screen">
-    <div class="splash-ad-container">
-        <div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase; letter-spacing:1px;">Sponsorisé</div>
-        
-        <div class="splash-ad-box">
-            </div>
-
-        <button id="skip-btn" class="splash-btn" disabled>Préparation de l'application...</button>
-    </div>
-</div>
-
-<div class="ad-space ad-top">
-    </div>
+<body>
 
 <div class="container">
-    <h1>Studio IA Cloud (contactez moi en priver pour l'apk) </h1>
+    <h1>Studio IA Cloud (maj fini le 07/06/2026)</h1>
     <div class="subtitle">Génération &amp; Tracé en temps réel</div>
     
     <div id="status">Prêt pour votre prompt...</div>
@@ -223,42 +134,11 @@
         <input id="cmd" placeholder="Ex: cat with a top hat...">
         <button id="send">Générer</button>
     </div>
+
+    <button class="report-btn" onclick="envoyerRapportEmail()">📊 Recevoir le bilan par e-mail</button>
 </div>
 
-<div class="ad-space ad-bottom">
-    </div>
-
 <script>
-// ----- GESTION DU COMPTE À REBOURS -----
-const skipBtn = document.getElementById("skip-btn");
-const splashScreen = document.getElementById("splash-ad-screen");
-
-splashScreen.addEventListener('touchmove', function(e) {
-    e.preventDefault();
-}, { passive: false });
-
-window.addEventListener('load', () => {
-    let timeLeft = 5;
-    skipBtn.textContent = `Publicité (${timeLeft}s)...`;
-
-    const countdown = setInterval(() => {
-        timeLeft--;
-        if (timeLeft > 0) {
-            skipBtn.textContent = `Publicité (${timeLeft}s)...`;
-        } else {
-            clearInterval(countdown);
-            skipBtn.textContent = "Accéder à l'application ➔";
-            skipBtn.disabled = false;
-        }
-    }, 1000);
-});
-
-skipBtn.addEventListener("click", () => {
-    splashScreen.style.display = "none"; 
-    document.body.classList.remove("ad-active"); 
-});
-
-// ----- LOGIQUE TECHNIQUE DU GÉNÉRATEUR D'IMAGES -----
 const SIZE = 400;
 const targetCanvas = document.getElementById("target");
 const robotCanvas = document.getElementById("robot");
@@ -273,6 +153,10 @@ let isRunning = false;
 let animationId = null;
 let cloudProgress = 0;
 let cloudInterval = null;
+
+if (!localStorage.getItem("globalImageCount")) {
+    localStorage.setItem("globalImageCount", "0");
+}
 
 function startCloudLoadingBar() {
     cloudProgress = 0;
@@ -335,14 +219,17 @@ function paint() {
         statusDiv.textContent = "Génération et peinture terminées !";
         isRunning = false;
         
-        // ---- ENVOI DU SIGNAL "+1" AU COMPTEUR GOOGLE SHEETS ----
-        const SCRIPT_URL = "METS_ICI_TON_URL_SCRIPT_GOOGLE_SI_TU_L_AS";
-        if(SCRIPT_URL !== "METS_ICI_TON_URL_SCRIPT_GOOGLE_SI_TU_L_AS") {
-            fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/x-www-form-urlencoded" } })
-            .then(() => console.log("Statistique synchronisée."))
-            .catch(err => console.error(err));
-        }
+        let total = parseInt(localStorage.getItem("globalImageCount")) + 1;
+        localStorage.setItem("globalImageCount", total.toString());
     }
+}
+
+function envoyerRapportEmail() {
+    const totalImages = localStorage.getItem("globalImageCount");
+    const email = "elyvannj@gmail.com";
+    const sujet = encodeURIComponent("📊 Rapport Studio IA : Images générées");
+    const message = encodeURIComponent(`Bonjour,\n\nLe nombre total d'images générées sur votre site à ce jour est de : ${totalImages} images.\n\nCliquez sur Envoyer pour valider ce rapport.`);
+    window.location.href = `mailto:${email}?subject=${sujet}&body=${message}`;
 }
 
 function startCloudGeneration(promptText) {
@@ -354,13 +241,16 @@ function startCloudGeneration(promptText) {
     const img = new Image();
     img.crossOrigin = "anonymous";
     
+    // Nettoyage ultra-propre du texte pour éviter les bugs d'accents
     let cleanPrompt = promptText.trim()
         .replace(/é|è|ê|ë/g, "e").replace(/à|â/g, "a")
         .replace(/ù|û/g, "u").replace(/ç/g, "c");
 
     const urlPrompt = encodeURIComponent(cleanPrompt);
     const uniqueSeed = Math.floor(Math.random() * 9999999) + "_" + Date.now();
-    img.src = `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&nologo=true&model=flux&seed=${uniqueSeed}`;
+    
+    // CORRECTION ICI : URL simplifiée et optimisée pour forcer la génération sans blocage
+    img.src = `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&nologo=true&seed=${uniqueSeed}`;
 
     img.onload = () => {
         stopCloudLoadingBar();
