@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA v9.7 - Stable Diffusion</title>
+    <title>Studio IA v9.8 - Multi-Serveurs</title>
     
     <style>
         :root {
@@ -107,7 +107,7 @@
 
 <div class="container">
     <h1>Studio IA Cloud</h1>
-    <div class="subtitle">Génération d'images &amp; Tracé en temps réel</div>
+    <div class="subtitle">Génération redondante &amp; Tracé temps réel</div>
     
     <div id="status">Prêt pour votre prompt...</div>
     <div id="barContainer"><div id="bar"></div></div>
@@ -120,7 +120,7 @@
     <div class="controls">
         <input type="file" id="fileInput" class="hidden-file" accept="image/*">
         <button style="background:none; color:var(--text-main); border:1px solid var(--border-color);" onclick="document.getElementById('fileInput').click()">📁</button>
-        <input id="cmd" placeholder="Ex: A futuristic neon city...">
+        <input id="cmd" placeholder="Ex: Cyberpunk city, oil painting...">
         <button id="send">Générer</button>
     </div>
 </div>
@@ -140,6 +140,7 @@ let isRunning = false;
 let animationId = null;
 let cloudProgress = 0;
 let cloudInterval = null;
+let currentProviderIndex = 0;
 
 function startCloudLoadingBar() {
     clearInterval(cloudInterval);
@@ -171,7 +172,6 @@ function paint() {
         let g = targetData[idx+1];
         let b = targetData[idx+2];
 
-        // Amélioration des contrastes du tracé
         r = (r - 128) * 1.2 + 128;
         g = (g - 128) * 1.2 + 128;
         b = (b - 128) * 1.2 + 128;
@@ -201,40 +201,28 @@ function paint() {
     }
 }
 
-function startCloudGeneration(promptText) {
-    // Reset complet des animations précédentes pour éviter les blocages
-    isRunning = false;
-    cancelAnimationFrame(animationId);
-    
-    statusDiv.textContent = "Création de l'image par l'IA... (Étape 1/2)";
-    startCloudLoadingBar();
-    
+function tryLoadImage(urlPrompt, uniqueSeed) {
     const img = new Image();
-    // Requis pour éviter le blocage CORS de sécurité sur Canvas
     img.removeAttribute("crossOrigin"); 
-    img.crossOrigin = "anonymous"; 
-    
-    // Nettoyage de base du texte pour l'URL
-    let cleanPrompt = promptText.trim()
-        .replace(/é|è|ê|ë/g, "e").replace(/à|â/g, "a")
-        .replace(/ù|û/g, "u").replace(/ç/g, "c");
+    img.crossOrigin = "anonymous";
 
-    const urlPrompt = encodeURIComponent(cleanPrompt);
-    const uniqueSeed = Math.floor(Math.random() * 999999) + "_" + Date.now();
-    
-    // Version la plus épurée et acceptée de l'API Stable Diffusion
-    img.src = `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&seed=${uniqueSeed}&nologo=true`;
+    // Liste des adresses de génération alternatives et gratuites
+    const providers = [
+        `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&seed=${uniqueSeed}&nologo=true`,
+        `https://api.v0.pollinations.ai/p/${urlPrompt}?width=400&height=400&seed=${uniqueSeed}&model=turbo`,
+        `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&seed=${uniqueSeed}&model=flux&nologo=true`
+    ];
+
+    statusDiv.textContent = `Connexion au serveur IA (Canal ${currentProviderIndex + 1}/3)...`;
+    img.src = providers[currentProviderIndex];
 
     img.onload = () => {
         stopCloudLoadingBar();
-        
-        // Nettoyage et préparation des deux Canvas
         tctx.clearRect(0, 0, SIZE, SIZE);
         tctx.drawImage(img, 0, 0, SIZE, SIZE);
         
         try {
             targetData = tctx.getImageData(0, 0, SIZE, SIZE).data;
-            
             rctx.globalAlpha = 1.0;
             rctx.fillStyle = "#ffffff";
             rctx.fillRect(0, 0, SIZE, SIZE);
@@ -245,15 +233,40 @@ function startCloudGeneration(promptText) {
             paint();
         } catch (e) {
             console.error(e);
-            statusDiv.textContent = "❌ Erreur de sécurité du navigateur. Réessayez.";
+            statusDiv.textContent = "❌ Erreur de lecture de texture.";
         }
     };
 
     img.onerror = () => {
-        clearInterval(cloudInterval);
-        bar.style.width = "0%";
-        statusDiv.textContent = "❌ Le serveur IA est surchargé. Réessayez dans un instant.";
+        // Si le serveur actuel échoue, on passe au suivant dans la liste
+        currentProviderIndex++;
+        if (currentProviderIndex < providers.length) {
+            console.log(`Serveur ${currentProviderIndex} en échec, bascule sur le serveur suivant...`);
+            tryLoadImage(urlPrompt, uniqueSeed);
+        } else {
+            // Si tous les serveurs ont échoué
+            clearInterval(cloudInterval);
+            bar.style.width = "0%";
+            statusDiv.textContent = "❌ Tous les serveurs IA sont saturés. Réessayez dans 1 minute.";
+        }
     };
+}
+
+function startCloudGeneration(promptText) {
+    isRunning = false;
+    cancelAnimationFrame(animationId);
+    startCloudLoadingBar();
+    
+    currentProviderIndex = 0; // Réinitialise l'index au premier serveur à chaque clic
+
+    let cleanPrompt = promptText.trim()
+        .replace(/é|è|ê|ë/g, "e").replace(/à|â/g, "a")
+        .replace(/ù|û/g, "u").replace(/ç/g, "c");
+
+    const urlPrompt = encodeURIComponent(cleanPrompt);
+    const uniqueSeed = Math.floor(Math.random() * 999999) + "_" + Date.now();
+
+    tryLoadImage(urlPrompt, uniqueSeed);
 }
 
 document.getElementById("send").addEventListener("click", () => {
