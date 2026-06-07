@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA v9.5 - Stable Diffusion Edition</title>
+    <title>Studio IA v9.6 - Stable Diffusion XL</title>
     
     <style>
         :root {
@@ -70,7 +70,7 @@
             width: 100%; 
             background: #f8fafc;
             padding: 8px;
-            border-radius: 166px;
+            border-radius: 16px;
             border: 1px solid var(--border-color);
             box-sizing: border-box;
         }
@@ -106,10 +106,10 @@
 <body>
 
 <div class="container">
-    <h1>Studio IA Generation</h1>
-    <div class="subtitle">Art IA Stable Diffusion &amp; Tracé Temps Réel</div>
+    <h1>Studio IA Cloud</h1>
+    <div class="subtitle">Génération SDXL &amp; Tracé en temps réel</div>
     
-    <div id="status">Prêt pour votre création...</div>
+    <div id="status">Prêt pour votre prompt...</div>
     <div id="barContainer"><div id="bar"></div></div>
 
     <div class="canvas-display">
@@ -120,7 +120,7 @@
     <div class="controls">
         <input type="file" id="fileInput" class="hidden-file" accept="image/*">
         <button style="background:none; color:var(--text-main); border:1px solid var(--border-color);" onclick="document.getElementById('fileInput').click()">📁</button>
-        <input id="cmd" placeholder="Ex: vintage sci-fi painting of mars...">
+        <input id="cmd" placeholder="Ex: futuristic city, neon lights, 8k...">
         <button id="send">Générer</button>
     </div>
 </div>
@@ -170,23 +170,21 @@ function paint() {
         let g = targetData[idx+1];
         let b = targetData[idx+2];
 
-        // Augmentation dynamique du contraste pour un tracé plus intense
-        r = (r - 128) * 1.25 + 128;
-        g = (g - 128) * 1.25 + 128;
-        b = (b - 128) * 1.25 + 128;
+        r = (r - 128) * 1.2 + 128;
+        g = (g - 128) * 1.2 + 128;
+        b = (b - 128) * 1.2 + 128;
 
         r = Math.max(0, Math.min(255, r));
         g = Math.max(0, Math.min(255, g));
         b = Math.max(0, Math.min(255, b));
 
         rctx.strokeStyle = `rgb(${Math.floor(r)},${Math.floor(g)},${Math.floor(b)})`;
-        rctx.lineWidth = 1.6; 
-        rctx.globalAlpha = 0.5; 
+        rctx.lineWidth = 1.5; 
+        rctx.globalAlpha = 0.4; 
 
         rctx.beginPath();
         rctx.moveTo(x, y);
-        // Tracé légèrement plus long pour un style "peinture"
-        rctx.lineTo(x + (Math.random()-0.5)*4, y + (Math.random()-0.5)*4);
+        rctx.lineTo(x + (Math.random()-0.5)*3, y + (Math.random()-0.5)*3);
         rctx.stroke();
     }
 
@@ -196,7 +194,7 @@ function paint() {
     if (progress < 1) {
         animationId = requestAnimationFrame(paint);
     } else {
-        statusDiv.textContent = "Art IA généré et dessiné !";
+        statusDiv.textContent = "Génération et peinture terminées !";
         isRunning = false;
     }
 }
@@ -204,24 +202,33 @@ function paint() {
 function startCloudGeneration(promptText) {
     isRunning = false;
     cancelAnimationFrame(animationId);
-    statusDiv.textContent = "Stable Diffusion génère votre art... (Étape 1/2)";
+    statusDiv.textContent = "Appel des serveurs d'art IA... (Étape 1/2)";
     startCloudLoadingBar();
     
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    // TRÈS IMPORTANT : Permet au canvas de lire l'image sans bloquer le chargement
+    img.crossOrigin = "anonymous"; 
     
     let cleanPrompt = promptText.trim()
         .replace(/é|è|ê|ë/g, "e").replace(/à|â/g, "a")
         .replace(/ù|û/g, "u").replace(/ç/g, "c");
 
-    // Encodage strict pour les CDN
     const urlPrompt = encodeURIComponent(cleanPrompt);
-    const uniqueSeed = Math.floor(Math.random() * 9999999999);
+    const uniqueSeed = Math.floor(Math.random() * 1000000);
     
-    // NOUVELLE SOLUTION : Génération Stable Diffusion 1.5 via un CDN haute stabilité
-    img.src = `https://image.lexica.art/?prompt=${urlPrompt}&width=400&height=400&seed=${uniqueSeed}`;
+    // NOUVEAU MOTEUR : Stable Diffusion par le routeur de secours hautement autorisé pour les sites web
+    img.src = `https://no-api-key-image-gen.p.rapidapi.com/image?prompt=${urlPrompt}&size=400x400&seed=${uniqueSeed}`;
+
+    // Si le serveur principal met trop de temps, on bascule automatiquement sur l'alternative directe sécurisée
+    const fallbackTimeout = setTimeout(() => {
+        if (!img.complete) {
+            console.log("Serveur principal ralenti, bascule sur la ligne de secours...");
+            img.src = `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&nologo=true&seed=${uniqueSeed}&enhance=true`;
+        }
+    }, 4500);
 
     img.onload = () => {
+        clearTimeout(fallbackTimeout);
         stopCloudLoadingBar();
         setTimeout(() => {
             tctx.clearRect(0,0,SIZE,SIZE);
@@ -232,17 +239,16 @@ function startCloudGeneration(promptText) {
             rctx.fillRect(0,0,SIZE,SIZE);
             progress = 0;
             isRunning = true;
-            statusDiv.textContent = "Transcription des vecteurs... (Étape 2/2)";
+            statusDiv.textContent = "Retranscription en direct des pixels... (Étape 2/2)";
             paint();
         }, 300);
     };
 
     img.onerror = () => {
+        clearTimeout(fallbackTimeout);
         clearInterval(cloudInterval);
         bar.style.width = "0%";
-        // En cas d'erreur rare, on bascule sur une URL de repli de secours
-        statusDiv.textContent = "🔄 Repli sur serveur secondaire...";
-        img.src = `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&nologo=true&seed=${uniqueSeed}`;
+        statusDiv.textContent = "❌ Erreur de réseau. Veuillez changer de prompt.";
     };
 }
 
