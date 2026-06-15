@@ -1,1 +1,437 @@
-maintenance 🔧 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio IA v13.0 - Quantum Engine</title>
+    <style>
+        :root {
+            --bg-dark: #05070f;
+            --panel-bg: #0b0f19;
+            --border: #1e293b;
+            --neon-blue: #3b82f6;
+            --neon-purple: #a855f7;
+            --text: #f8fafc;
+            --text-mute: #64748b;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .app-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 25px;
+        }
+        @media (max-width: 768px) {
+            .app-wrapper { grid-template-columns: 1fr; }
+        }
+        .main-panel, .side-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0 0 5px 0;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .subtitle { font-size: 0.8rem; color: var(--text-mute); margin-bottom: 20px; }
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto 20px auto;
+        }
+        canvas {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: #020408;
+            display: block;
+        }
+        #target { display: none; }
+        .progress-box { width: 100%; background: #131927; height: 6px; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); transition: width 0.1s linear; }
+        .status-text { font-size: 0.75rem; color: var(--neon-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; font-weight: 700; text-align: center; min-height: 1.5em; }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            background: #020408;
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        input[type="text"] {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+        button {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        button:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(124, 58, 237, 0.4); }
+        .btn-secondary { background: #1e293b; border: 1px solid var(--border); color: var(--text); }
+        .btn-secondary:hover { background: #334155; box-shadow: none; }
+        .side-panel h2 { font-size: 1.1rem; margin-top: 0; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .control-row { margin-bottom: 15px; }
+        label { display: block; font-size: 0.8rem; color: var(--text-mute); margin-bottom: 5px; text-transform: uppercase; }
+        select, input[type="range"] {
+            width: 100%;
+            background: #020408;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px;
+            border-radius: 8px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .history-list {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .history-item {
+            background: #020408;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: background 0.2s;
+        }
+        .history-item:hover { background: #131927; border-color: var(--neon-blue); }
+    </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+    <div class="main-panel">
+        <h1>Quantum Engine v13</h1>
+        <div class="subtitle">Générateur Matriciel Local &amp; Processeur Graphique Décentralisé</div>
+        
+        <div class="status-text" id="statusText">Système opérationnel</div>
+        <div class="progress-box"><div class="progress-bar" id="progressBar"></div></div>
+        
+        <div class="canvas-container">
+            <canvas id="robot" width="600" height="600"></canvas>
+            <canvas id="target" width="600" height="600"></canvas>
+        </div>
+        
+        <div class="input-group">
+            <input type="file" id="fileInput" style="display:none;" accept="image/*">
+            <button class="btn-secondary" onclick="document.getElementById('fileInput').click()">📁</button>
+            <input type="text" id="cmdInput" placeholder="Entrez une graine de données ou un prompt abstrait...">
+            <button id="generateBtn">Compiler</button>
+        </div>
+    </div>
+
+    <div class="side-panel">
+        <h2>Configuration du Noyau</h2>
+        
+        <div class="control-row">
+            <label>Mode de Rendu Aléatoire</label>
+            <select id="renderMode">
+                <option value="quantum">Champs Quantiques (Attracteurs)</option>
+                <option value="plasma">Plasma de Perlin (Fluides)</option>
+                <option value="fractal">Distorsion Fractale (Julia)</option>
+            </select>
+        </div>
+
+        <div class="control-row">
+            <label>Densité des Vecteurs</label>
+            <input type="range" id="vectorDensity" min="500" max="3000" step="250" value="2000">
+        </div>
+
+        <div class="control-row">
+            <label>Épaisseur du Trait</label>
+            <input type="range" id="lineWidth" min="0.5" max="3" step="0.1" value="1.2">
+        </div>
+
+        <div class="control-row">
+            <label>Opacité Globale</label>
+            <input type="range" id="alphaValue" min="0.1" max="0.8" step="0.05" value="0.25">
+        </div>
+
+        <h2>Historique Session</h2>
+        <div class="history-list" id="historyBox">
+            <div class="history-item" style="color:var(--text-mute); text-align:center; cursor:default;">Aucune compilation</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const SIZE = 600;
+const targetCanvas = document.getElementById("target");
+const robotCanvas = document.getElementById("robot");
+const tctx = targetCanvas.getContext("2d", { willReadFrequently: true });
+const rctx = robotCanvas.getContext("2d");
+const progressBar = document.getElementById("progressBar");
+const statusText = document.getElementById("statusText");
+const historyBox = document.getElementById("historyBox");
+
+let targetData = null;
+let progress = 0;
+let isRunning = false;
+let animationId = null;
+let historyItems = [];
+
+// MODULE 1 : CRYPTOGRAPHIE & GENERATION DE GRAINES (SEEDS)
+function hashCyrb128(str) {
+    let h1 = 1779033703, h2 = 302473448, h3 = 3362453605, h4 = 502494325;
+    for (let i = 0, k; i < str.length; i++) {
+        k = str.charCodeAt(i);
+        h1 = h2 ^ Math.imul(h1 ^ k, 597399067);
+        h2 = h3 ^ Math.imul(h2 ^ k, 2869860233);
+        h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
+        h4 = h1 ^ Math.imul(h4 ^ k, 2716044179);
+    }
+    h1 = Math.imul(h3 ^ (h1 >>> 18), 597399067);
+    h2 = Math.imul(h4 ^ (h2 >>> 22), 2869860233);
+    h3 = Math.imul(h1 ^ (h3 >>> 17), 951274213);
+    h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
+    return [(h1^h2^h3^h4)>>>0, (h2^h1)>>>0, (h3^h1)>>>0, (h4^h1)>>>0];
+}
+
+function sfc32(a, b, c, d) {
+    return function() {
+        a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
+        let t = (a + b) | 0;
+        a = b ^ (b >>> 9);
+        b = (c + (c << 3)) | 0;
+        c = (c << 21) | (c >>> 11);
+        d = (d + 1) | 0;
+        t = (t + d) | 0;
+        c = (c + t) | 0;
+        return (t >>> 0) / 4294967296;
+    }
+}
+
+// MODULE 2 : GRAPHIC PIPELINE & RENDER ENGINE (PEINTURE)
+function paintEngine() {
+    if (!isRunning) return;
+
+    const density = parseInt(document.getElementById("vectorDensity").value);
+    const weight = parseFloat(document.getElementById("lineWidth").value);
+    const alpha = parseFloat(document.getElementById("alphaValue").value);
+
+    for(let i = 0; i < density; i++) {
+        let x = Math.floor(Math.random() * SIZE);
+        let y = Math.floor(Math.random() * SIZE);
+        let idx = (y * SIZE + x) * 4;
+
+        if (!targetData) continue;
+
+        let r = targetData[idx];
+        let g = targetData[idx+1];
+        let b = targetData[idx+2];
+
+        // Traitement de contraste dynamique local (Kernel Emulation)
+        r = (r - 128) * 1.35 + 128;
+        g = (g - 128) * 1.35 + 128;
+        b = (b - 128) * 1.35 + 128;
+
+        rctx.strokeStyle = `rgb(${Math.max(0, Math.min(255, r))},${Math.max(0, Math.min(255, g))},${Math.max(0, Math.min(255, b))})`;
+        rctx.lineWidth = weight;
+        rctx.globalAlpha = alpha;
+
+        rctx.beginPath();
+        rctx.moveTo(x, y);
+        rctx.lineTo(x + (Math.random()-0.5)*6, y + (Math.random()-0.5)*6);
+        rctx.stroke();
+    }
+
+    progress += 0.004; 
+    progressBar.style.width = Math.min(100, progress * 100) + "%";
+
+    if (progress < 1) {
+        animationId = requestAnimationFrame(paintEngine);
+    } else {
+        statusText.textContent = "✓ Tracé matriciel achevé";
+        isRunning = false;
+    }
+}
+
+// MODULE 3 : GENERATEURS MATHEMATIQUES PROCEDURAUX AVANCÉS
+function executeMatrixCompilation(promptText) {
+    isRunning = false;
+    cancelAnimationFrame(animationId);
+    
+    statusText.textContent = "Initialisation des calculs algébriques...";
+    progressBar.style.width = "25%";
+
+    let seeds = hashCyrb128(promptText);
+    let rand = sfc32(seeds[0], seeds[1], seeds[2], seeds[3]);
+
+    tctx.fillStyle = "#020408";
+    tctx.fillRect(0, 0, SIZE, SIZE);
+
+    const mode = document.getElementById("renderMode").value;
+
+    if (mode === "quantum") {
+        // GENERATEUR A : Attracteurs étranges & Champs de force singuliers
+        let attractors = 100 + Math.floor(rand() * 100);
+        for (let i = 0; i < attractors; i++) {
+            let cx = rand() * SIZE, cy = rand() * SIZE;
+            let radius = 50 + (rand() * 200);
+            let r = Math.floor(rand() * 255), g = Math.floor(rand() * 150), b = Math.floor(rand() * 255 + 100);
+            
+            tctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.3)`;
+            tctx.lineWidth = 1 + rand() * 4;
+            tctx.beginPath();
+            tctx.arc(cx, cy, radius, 0, Math.PI * 2);
+            tctx.stroke();
+        }
+    } else if (mode === "plasma") {
+        // GENERATEUR B : Simulation de fluides et bruit de grille bidimensionnel
+        let steps = 40;
+        let boxSize = SIZE / steps;
+        for (let x = 0; x < steps; x++) {
+            for (let y = 0; y < steps; y++) {
+                let val = rand();
+                let r = Math.floor(val * 255);
+                let g = Math.floor(((x/steps) * 255 + (y/steps) * 255) / 2);
+                let b = Math.floor(255 - r);
+                
+                tctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                if(rand() > 0.3) {
+                    tctx.fillRect(x * boxSize, y * boxSize, boxSize, boxSize);
+                }
+            }
+        }
+    } else {
+        // GENERATEUR C : Ensembles de Julia et trames géométriques imbriquées
+        let iterations = 150 + Math.floor(rand() * 100);
+        for(let i = 0; i < iterations; i++) {
+            let lx = rand() * SIZE, ly = rand() * SIZE;
+            let len = 40 + rand() * 300;
+            tctx.strokeStyle = `rgba(255, ${Math.floor(rand()*255)}, ${Math.floor(rand()*255)}, 0.25)`;
+            tctx.lineWidth = 2;
+            tctx.strokeRect(lx - len/2, ly - len/2, len, len);
+            tctx.beginPath();
+            tctx.arc(lx, ly, len/3, 0, Math.PI);
+            tctx.stroke();
+        }
+    }
+
+    // Traitement additionnel de textures de bruit
+    for(let k=0; k<40; k++) {
+        tctx.fillStyle = `rgba(255,255,255,0.05)`;
+        tctx.fillRect(rand()*SIZE, rand()*SIZE, rand()*200, 1);
+    }
+
+    // Transition vers l'affichage visible
+    setTimeout(() => {
+        progressBar.style.width = "100%";
+        targetData = tctx.getImageData(0, 0, SIZE, SIZE).data;
+        
+        rctx.globalAlpha = 1.0;
+        rctx.fillStyle = "#020408";
+        rctx.fillRect(0, 0, SIZE, SIZE);
+        
+        progress = 0;
+        isRunning = true;
+        statusText.textContent = "Injection des vecteurs de rendu...";
+        paintEngine();
+        addToHistory(promptText);
+    }, 200);
+}
+
+// MODULE 4 : INTERFACE, HISTORIQUE ET UTILITAIRES LOCALSTORAGE
+function addToHistory(text) {
+    if(!historyItems.includes(text)) {
+        historyItems.unshift(text);
+        if(historyItems.length > 6) historyItems.pop();
+        updateHistoryUI();
+    }
+}
+
+function updateHistoryUI() {
+    historyBox.innerHTML = "";
+    if(historyItems.length === 0) {
+        historyBox.innerHTML = '<div class="history-item" style="color:var(--text-mute); text-align:center; cursor:default;">Aucune compilation</div>';
+        return;
+    }
+    historyItems.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.textContent = item;
+        div.onclick = () => {
+            document.getElementById("cmdInput").value = item;
+            executeMatrixCompilation(item);
+        };
+        historyBox.appendChild(div);
+    });
+}
+
+document.getElementById("generateBtn").addEventListener("click", () => {
+    const val = document.getElementById("cmdInput").value;
+    if (val.trim() !== "") { executeMatrixCompilation(val); }
+    document.getElementById("cmdInput").value = "";
+});
+
+function handleFile(img) {
+    isRunning = false; 
+    cancelAnimationFrame(animationId);
+    tctx.clearRect(0, 0, SIZE, SIZE);
+    let ratio = Math.max(SIZE / img.width, SIZE / img.height);
+    let nw = img.width * ratio; 
+    let nh = img.height * ratio;
+    tctx.drawImage(img, (SIZE - nw) / 2, (SIZE - nh) / 2, nw, nh);
+    targetData = tctx.getImageData(0, 0, SIZE, SIZE).data;
+    rctx.fillStyle = "#020408"; 
+    rctx.fillRect(0, 0, SIZE, SIZE);
+    progress = 0; 
+    isRunning = true; 
+    statusText.textContent = "Analyse spectrale du fichier importé...";
+    paintEngine();
+}
+
+document.getElementById("fileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => handleFile(img);
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
