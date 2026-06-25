@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA v14.5 - le plus stable mdr </title>
+    <title>Studio IA v15.5 - Safe Edition</title>
     
     <style>
         :root {
@@ -57,8 +57,6 @@
             margin-bottom: 30px; 
             letter-spacing: 0.5px;
         }
-
-        #target { display: none; }
         
         .canvas-display { 
             margin: 0 auto 25px auto; 
@@ -168,14 +166,13 @@
 
 <div class="container">
     <h1>Studio IA</h1>
-    <div class="subtitle">Génération d'images Cloud Légère</div>
+    <div class="subtitle">Affichage Instantané Sécurisé</div>
     
     <div id="status">Prêt pour votre prompt...</div>
     <div id="barContainer"><div id="bar"></div></div>
 
     <div class="canvas-display">
         <canvas id="robot" width="400" height="400"></canvas>
-        <canvas id="target" width="400" height="400"></canvas>
     </div>
 
     <div class="controls">
@@ -188,19 +185,54 @@
 
 <script>
 const SIZE = 400;
-const targetCanvas = document.getElementById("target");
 const robotCanvas = document.getElementById("robot");
-const tctx = targetCanvas.getContext("2d", { willReadFrequently: true });
 const rctx = robotCanvas.getContext("2d");
 const bar = document.getElementById("bar");
 const statusDiv = document.getElementById("status");
 
-let targetData = null;
-let progress = 0;
-let isRunning = false;
+let isLoading = false;
 let animationId = null;
 let cloudProgress = 0;
 let cloudInterval = null;
+let rotationAngle = 0;
+
+// FILTRE DE MODÉRATION : Liste des mots interdits
+const BANNED_KEYWORDS = [
+    "nsfw", "+18", "18+", "porn", "sexy", "nude", "nu ", "naked", "gore", "blood", "sang", "kill", "mort", "weapon", "arme"
+];
+
+function drawLoadingScreen() {
+    if (!isLoading) return;
+
+    rctx.fillStyle = "#030712";
+    rctx.fillRect(0, 0, SIZE, SIZE);
+
+    rctx.save();
+    rctx.translate(SIZE / 2, SIZE / 2 - 20);
+    rctx.rotate(rotationAngle);
+    rctx.strokeStyle = "rgba(59, 130, 246, 0.2)";
+    rctx.lineWidth = 4;
+    rctx.beginPath();
+    rctx.arc(0, 0, 30, 0, Math.PI * 2);
+    rctx.stroke();
+
+    rctx.strokeStyle = "#3b82f6";
+    rctx.beginPath();
+    rctx.arc(0, 0, 30, 0, Math.PI * 0.4);
+    rctx.stroke();
+    rctx.restore();
+
+    rctx.fillStyle = "#9ca3af";
+    rctx.font = "600 14px 'Segoe UI', sans-serif";
+    rctx.textAlign = "center";
+    let pulse = Math.abs(Math.sin(Date.now() * 0.005));
+    rctx.globalAlpha = 0.3 + pulse * 0.7;
+    rctx.fillText("CALCUL IA EN COURS...", SIZE / 2, SIZE / 2 + 40);
+    rctx.globalAlpha = 1.0;
+
+    rotationAngle += 0.1;
+    animationId = requestAnimationFrame(drawLoadingScreen);
+}
 
 function startCloudLoadingBar() {
     cloudProgress = 0;
@@ -217,45 +249,33 @@ function stopCloudLoadingBar() {
     bar.style.width = "100%";
 }
 
-function paint() {
-    if (!isRunning) return;
-
-    for(let i=0; i<250; i++) {
-        let x = Math.floor(Math.random() * SIZE);
-        let y = Math.floor(Math.random() * SIZE);
-        let idx = (y * SIZE + x) * 4;
-
-        if (!targetData) continue;
-
-        let r = targetData[idx];
-        let g = targetData[idx+1];
-        let b = targetData[idx+2];
-
-        rctx.strokeStyle = `rgb(${r},${g},${b})`;
-        rctx.lineWidth = 1.5; 
-        rctx.globalAlpha = 0.4; 
-
-        rctx.beginPath();
-        rctx.moveTo(x, y);
-        rctx.lineTo(x + (Math.random()-0.5)*3, y + (Math.random()-0.5)*3);
-        rctx.stroke();
-    }
-
-    progress += 0.0005; 
-    bar.style.width = Math.min(100, progress * 100) + "%";
-
-    if (progress < 1) {
-        animationId = requestAnimationFrame(paint);
-    } else {
-        statusDiv.textContent = "✓ Génération et peinture terminées !";
-        isRunning = false;
-    }
+function checkSafety(text) {
+    const lowerText = text.toLowerCase();
+    // Parcourt la liste des mots interdits pour voir s'il y a une correspondance
+    return BANNED_KEYWORDS.some(word => lowerText.includes(word));
 }
 
 function startCloudGeneration(promptText) {
-    isRunning = false;
+    // Étape de vérification du filtre
+    if (checkSafety(promptText)) {
+        statusDiv.textContent = "❌ Contenu bloqué : Mot-clé non autorisé.";
+        statusDiv.style.color = "#ef4444"; // Alerte rouge
+        bar.style.width = "0%";
+        
+        // Reset l'écran en noir
+        rctx.fillStyle = "#030712";
+        rctx.fillRect(0, 0, SIZE, SIZE);
+        return;
+    }
+
+    // Remettre la couleur normale du statut si le mot passe le filtre
+    statusDiv.style.color = "var(--accent-color)";
+
+    isLoading = true;
     cancelAnimationFrame(animationId);
-    statusDiv.textContent = "Calcul IA en cours sur les serveurs... (Étape 1/2)";
+    drawLoadingScreen();
+    
+    statusDiv.textContent = "Calcul IA en cours sur les serveurs...";
     startCloudLoadingBar();
     
     const img = new Image();
@@ -273,23 +293,22 @@ function startCloudGeneration(promptText) {
 
     img.onload = () => {
         stopCloudLoadingBar();
-        setTimeout(() => {
-            tctx.clearRect(0,0,SIZE,SIZE);
-            tctx.drawImage(img, 0, 0, SIZE, SIZE);
-            targetData = tctx.getImageData(0,0,SIZE,SIZE).data;
-            rctx.globalAlpha = 1.0;
-            rctx.fillStyle = "#030712"; // Adapté au fond sombre du canvas
-            rctx.fillRect(0,0,SIZE,SIZE);
-            progress = 0;
-            isRunning = true;
-            statusDiv.textContent = "Retranscription de l'image... (Étape 2/2)";
-            paint();
-        }, 300);
+        isLoading = false;
+        cancelAnimationFrame(animationId);
+
+        rctx.clearRect(0, 0, SIZE, SIZE);
+        rctx.drawImage(img, 0, 0, SIZE, SIZE);
+        
+        statusDiv.textContent = "✓ Image générée avec succès !";
     };
 
     img.onerror = () => {
+        isLoading = false;
+        cancelAnimationFrame(animationId);
         clearInterval(cloudInterval);
         bar.style.width = "0%";
+        rctx.fillStyle = "#030712";
+        rctx.fillRect(0, 0, SIZE, SIZE);
         statusDiv.textContent = "❌ Le serveur IA n'a pas répondu. Réessayez.";
     };
 }
@@ -301,14 +320,18 @@ document.getElementById("send").addEventListener("click", () => {
 });
 
 function handleFile(img) {
-    isRunning = false; cancelAnimationFrame(animationId);
-    tctx.clearRect(0,0,SIZE,SIZE);
+    isLoading = false;
+    cancelAnimationFrame(animationId);
+    clearInterval(cloudInterval);
+    bar.style.width = "100%";
+    statusDiv.style.color = "var(--accent-color)";
+    
+    rctx.clearRect(0, 0, SIZE, SIZE);
     let ratio = Math.max(SIZE / img.width, SIZE / img.height);
-    let nw = img.width * ratio; let nh = img.height * ratio;
-    tctx.drawImage(img, (SIZE - nw) / 2, (SIZE - nh) / 2, nw, nh);
-    targetData = tctx.getImageData(0,0,SIZE,SIZE).data;
-    rctx.fillStyle = "#030712"; rctx.fillRect(0,0,SIZE,SIZE);
-    progress = 0; isRunning = true; paint();
+    let nw = img.width * ratio; 
+    let nh = img.height * ratio;
+    rctx.drawImage(img, (SIZE - nw) / 2, (SIZE - nh) / 2, nw, nh);
+    statusDiv.textContent = "✓ Image locale importée";
 }
 
 document.getElementById("fileInput").addEventListener("change", (e) => {
@@ -323,6 +346,9 @@ document.getElementById("fileInput").addEventListener("change", (e) => {
         reader.readAsDataURL(file);
     }
 });
+
+rctx.fillStyle = "#030712";
+rctx.fillRect(0, 0, SIZE, SIZE);
 </script>
 </body>
 </html>
