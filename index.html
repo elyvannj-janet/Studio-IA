@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA v15.5 - Safe Edition</title>
+    <title>Studio IA v16.0 - j'espère c'est Stable </title>
     
     <style>
         :root {
@@ -195,8 +195,8 @@ let animationId = null;
 let cloudProgress = 0;
 let cloudInterval = null;
 let rotationAngle = 0;
+let rgbHue = 0; // Gère la couleur du dégradé arc-en-ciel
 
-// FILTRE DE MODÉRATION : Liste des mots interdits
 const BANNED_KEYWORDS = [
     "nsfw", "+18", "18+", "porn", "sexy", "nude", "nu ", "naked", "gore", "blood", "sang", "kill", "mort", "weapon", "arme"
 ];
@@ -207,30 +207,42 @@ function drawLoadingScreen() {
     rctx.fillStyle = "#030712";
     rctx.fillRect(0, 0, SIZE, SIZE);
 
+    // 1. Dessin du Spinner de chargement
     rctx.save();
     rctx.translate(SIZE / 2, SIZE / 2 - 20);
     rctx.rotate(rotationAngle);
-    rctx.strokeStyle = "rgba(59, 130, 246, 0.2)";
+    rctx.strokeStyle = "rgba(59, 130, 246, 0.1)";
     rctx.lineWidth = 4;
     rctx.beginPath();
     rctx.arc(0, 0, 30, 0, Math.PI * 2);
     rctx.stroke();
 
-    rctx.strokeStyle = "#3b82f6";
+    // Couleur du spinner synchronisée sur le cycle RGB lent
+    rctx.strokeStyle = `hsl(${rgbHue}, 80%, 60%)`;
     rctx.beginPath();
     rctx.arc(0, 0, 30, 0, Math.PI * 0.4);
     rctx.stroke();
     rctx.restore();
 
-    rctx.fillStyle = "#9ca3af";
-    rctx.font = "600 14px 'Segoe UI', sans-serif";
+    // 2. Rendu du Texte RGB Lent
+    rctx.save();
+    rctx.font = "800 15px 'Segoe UI', sans-serif";
     rctx.textAlign = "center";
-    let pulse = Math.abs(Math.sin(Date.now() * 0.005));
-    rctx.globalAlpha = 0.3 + pulse * 0.7;
+    
+    // Crée un effet de couleur HSL glissant (arc-en-ciel)
+    rctx.fillStyle = `hsl(${rgbHue}, 85%, 60%)`;
+    
+    // Léger effet de pulsation d'opacité fluide
+    let pulse = Math.abs(Math.sin(Date.now() * 0.003));
+    rctx.globalAlpha = 0.4 + pulse * 0.6;
+    
     rctx.fillText("CALCUL IA EN COURS...", SIZE / 2, SIZE / 2 + 40);
-    rctx.globalAlpha = 1.0;
+    rctx.restore();
 
-    rotationAngle += 0.1;
+    // Vitesse de changement de couleur (plus le chiffre est petit, plus le RGB est lent)
+    rgbHue = (rgbHue + 0.8) % 360; 
+    rotationAngle += 0.08;
+
     animationId = requestAnimationFrame(drawLoadingScreen);
 }
 
@@ -251,26 +263,20 @@ function stopCloudLoadingBar() {
 
 function checkSafety(text) {
     const lowerText = text.toLowerCase();
-    // Parcourt la liste des mots interdits pour voir s'il y a une correspondance
     return BANNED_KEYWORDS.some(word => lowerText.includes(word));
 }
 
 function startCloudGeneration(promptText) {
-    // Étape de vérification du filtre
     if (checkSafety(promptText)) {
         statusDiv.textContent = "❌ Contenu bloqué : Mot-clé non autorisé.";
-        statusDiv.style.color = "#ef4444"; // Alerte rouge
+        statusDiv.style.color = "#ef4444";
         bar.style.width = "0%";
-        
-        // Reset l'écran en noir
         rctx.fillStyle = "#030712";
         rctx.fillRect(0, 0, SIZE, SIZE);
         return;
     }
 
-    // Remettre la couleur normale du statut si le mot passe le filtre
     statusDiv.style.color = "var(--accent-color)";
-
     isLoading = true;
     cancelAnimationFrame(animationId);
     drawLoadingScreen();
