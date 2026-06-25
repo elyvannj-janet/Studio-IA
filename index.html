@@ -1,1 +1,328 @@
-maintenance 🔧 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio IA v14.5 - Cyber Edition</title>
+    
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --card-bg: #111827;
+            --border-color: #1f2937;
+            --accent-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.25);
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background-color: var(--bg-dark);
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container { 
+            width: 100%;
+            max-width: 480px; 
+            background: var(--card-bg); 
+            padding: 40px; 
+            border-radius: 28px; 
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 40px var(--accent-glow);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+
+        h1 { 
+            font-size: 1.7rem; 
+            font-weight: 800; 
+            margin: 0 0 6px 0; 
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+        
+        .subtitle { 
+            font-size: 0.85rem; 
+            color: var(--text-muted); 
+            margin-bottom: 30px; 
+            letter-spacing: 0.5px;
+        }
+
+        #target { display: none; }
+        
+        .canvas-display { 
+            margin: 0 auto 25px auto; 
+            position: relative;
+            display: block;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        canvas#robot { 
+            border-radius: 20px; 
+            background: #030712; 
+            border: 1px solid var(--border-color);
+            width: 100%; 
+            height: auto;
+            display: block;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        #barContainer { 
+            width: 100%; 
+            background: #1f2937; 
+            height: 6px; 
+            border-radius: 10px; 
+            margin-bottom: 25px; 
+            overflow: hidden; 
+        }
+        
+        #bar { 
+            height: 100%; 
+            width: 0%; 
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6); 
+            transition: width 0.2s ease-out; 
+        }
+
+        .controls { 
+            display: flex; 
+            gap: 12px; 
+            width: 100%; 
+            background: #030712;
+            padding: 10px;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+
+        input#cmd { 
+            flex: 1; 
+            padding: 12px 14px; 
+            border-radius: 12px; 
+            border: none; 
+            background: transparent; 
+            color: var(--text-main); 
+            outline: none;
+            font-size: 0.95rem;
+        }
+        
+        input#cmd::placeholder {
+            color: #4b5563;
+        }
+
+        button { 
+            padding: 12px 26px; 
+            background: linear-gradient(135deg, #2563eb, #7c3aed); 
+            color: #ffffff; 
+            border: none; 
+            border-radius: 14px; 
+            cursor: pointer; 
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        button:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 6px 20px var(--accent-glow); 
+        }
+        
+        .btn-file {
+            background: #1f2937; 
+            color: var(--text-main); 
+            border: 1px solid var(--border-color); 
+            padding: 12px 18px;
+            box-shadow: none;
+        }
+        
+        .btn-file:hover {
+            background: #2d3748;
+            box-shadow: none;
+        }
+
+        .hidden-file { display: none; }
+        
+        #status { 
+            font-size: 0.75rem; 
+            color: var(--accent-color); 
+            margin-bottom: 12px; 
+            min-height: 1.2em; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Studio IA</h1>
+    <div class="subtitle">Génération d'images Cloud Légère</div>
+    
+    <div id="status">Prêt pour votre prompt...</div>
+    <div id="barContainer"><div id="bar"></div></div>
+
+    <div class="canvas-display">
+        <canvas id="robot" width="400" height="400"></canvas>
+        <canvas id="target" width="400" height="400"></canvas>
+    </div>
+
+    <div class="controls">
+        <input type="file" id="fileInput" class="hidden-file" accept="image/*">
+        <button class="btn-file" onclick="document.getElementById('fileInput').click()">📁</button>
+        <input id="cmd" placeholder="Ex: A futuristic mechanical wolf...">
+        <button id="send">Générer</button>
+    </div>
+</div>
+
+<script>
+const SIZE = 400;
+const targetCanvas = document.getElementById("target");
+const robotCanvas = document.getElementById("robot");
+const tctx = targetCanvas.getContext("2d", { willReadFrequently: true });
+const rctx = robotCanvas.getContext("2d");
+const bar = document.getElementById("bar");
+const statusDiv = document.getElementById("status");
+
+let targetData = null;
+let progress = 0;
+let isRunning = false;
+let animationId = null;
+let cloudProgress = 0;
+let cloudInterval = null;
+
+function startCloudLoadingBar() {
+    cloudProgress = 0;
+    bar.style.width = "0%";
+    cloudInterval = setInterval(() => {
+        if (cloudProgress < 90) { cloudProgress += Math.random() * 7; } 
+        else if (cloudProgress < 98) { cloudProgress += 0.5; }
+        bar.style.width = Math.min(98, cloudProgress) + "%";
+    }, 150);
+}
+
+function stopCloudLoadingBar() {
+    clearInterval(cloudInterval);
+    bar.style.width = "100%";
+}
+
+function paint() {
+    if (!isRunning) return;
+
+    for(let i=0; i<250; i++) {
+        let x = Math.floor(Math.random() * SIZE);
+        let y = Math.floor(Math.random() * SIZE);
+        let idx = (y * SIZE + x) * 4;
+
+        if (!targetData) continue;
+
+        let r = targetData[idx];
+        let g = targetData[idx+1];
+        let b = targetData[idx+2];
+
+        rctx.strokeStyle = `rgb(${r},${g},${b})`;
+        rctx.lineWidth = 1.5; 
+        rctx.globalAlpha = 0.4; 
+
+        rctx.beginPath();
+        rctx.moveTo(x, y);
+        rctx.lineTo(x + (Math.random()-0.5)*3, y + (Math.random()-0.5)*3);
+        rctx.stroke();
+    }
+
+    progress += 0.0005; 
+    bar.style.width = Math.min(100, progress * 100) + "%";
+
+    if (progress < 1) {
+        animationId = requestAnimationFrame(paint);
+    } else {
+        statusDiv.textContent = "✓ Génération et peinture terminées !";
+        isRunning = false;
+    }
+}
+
+function startCloudGeneration(promptText) {
+    isRunning = false;
+    cancelAnimationFrame(animationId);
+    statusDiv.textContent = "Calcul IA en cours sur les serveurs... (Étape 1/2)";
+    startCloudLoadingBar();
+    
+    const img = new Image();
+    img.removeAttribute("crossOrigin"); 
+    img.crossOrigin = "anonymous"; 
+    
+    let cleanPrompt = promptText.trim()
+        .replace(/é|è|ê|ë/g, "e").replace(/à|â/g, "a")
+        .replace(/ù|û/g, "u").replace(/ç/g, "c");
+
+    const urlPrompt = encodeURIComponent(cleanPrompt);
+    const uniqueSeed = Math.floor(Math.random() * 999999) + "_" + Date.now();
+    
+    img.src = `https://image.pollinations.ai/p/${urlPrompt}?width=400&height=400&seed=${uniqueSeed}&nologo=true`;
+
+    img.onload = () => {
+        stopCloudLoadingBar();
+        setTimeout(() => {
+            tctx.clearRect(0,0,SIZE,SIZE);
+            tctx.drawImage(img, 0, 0, SIZE, SIZE);
+            targetData = tctx.getImageData(0,0,SIZE,SIZE).data;
+            rctx.globalAlpha = 1.0;
+            rctx.fillStyle = "#030712"; // Adapté au fond sombre du canvas
+            rctx.fillRect(0,0,SIZE,SIZE);
+            progress = 0;
+            isRunning = true;
+            statusDiv.textContent = "Retranscription de l'image... (Étape 2/2)";
+            paint();
+        }, 300);
+    };
+
+    img.onerror = () => {
+        clearInterval(cloudInterval);
+        bar.style.width = "0%";
+        statusDiv.textContent = "❌ Le serveur IA n'a pas répondu. Réessayez.";
+    };
+}
+
+document.getElementById("send").addEventListener("click", () => {
+    const val = document.getElementById("cmd").value;
+    if (val.trim() !== "") { startCloudGeneration(val); }
+    document.getElementById("cmd").value = "";
+});
+
+function handleFile(img) {
+    isRunning = false; cancelAnimationFrame(animationId);
+    tctx.clearRect(0,0,SIZE,SIZE);
+    let ratio = Math.max(SIZE / img.width, SIZE / img.height);
+    let nw = img.width * ratio; let nh = img.height * ratio;
+    tctx.drawImage(img, (SIZE - nw) / 2, (SIZE - nh) / 2, nw, nh);
+    targetData = tctx.getImageData(0,0,SIZE,SIZE).data;
+    rctx.fillStyle = "#030712"; rctx.fillRect(0,0,SIZE,SIZE);
+    progress = 0; isRunning = true; paint();
+}
+
+document.getElementById("fileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => handleFile(img);
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+</body>
+</html>
