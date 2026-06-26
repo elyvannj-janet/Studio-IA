@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA v16.6 - Stable Build</title>
+    <title>Studio IA v17.0 - Global Analytics</title>
     
     <style>
         :root {
@@ -186,7 +186,7 @@
     <h1>Studio IA</h1>
     <div class="subtitle">Affichage Instantané Sécurisé</div>
     
-    <div class="counter-badge">📊 Visites (24h) : <span id="visitCount">1</span></div>
+    <div class="counter-badge">🌐 Visites Mondiales : <span id="visitCount">...</span></div>
     
     <div id="status">Prêt pour votre prompt...</div>
     <div id="barContainer"><div id="bar"></div></div>
@@ -221,16 +221,26 @@ const BANNED_KEYWORDS = [
     "nsfw", "+18", "18+", "porn", "sexy", "nude", "nu ", "naked", "gore", "blood", "sang", "kill", "mort", "weapon", "arme"
 ];
 
-function updateVisitCounter() {
-    const NOW = Date.now();
-    const ONE_DAY = 24 * 60 * 60 * 1000;
-    let visits = JSON.parse(localStorage.getItem("studio_ia_visits")) || [];
-    visits.push(NOW);
-    visits = visits.filter(timestamp => (NOW - timestamp) < ONE_DAY);
-    localStorage.setItem("studio_ia_visits", JSON.stringify(visits));
-    document.getElementById("visitCount").textContent = visits.length;
+// --- NOUVEAU COMPTEUR CLOUD MONDIAL COMPLET ---
+async function updateGlobalCounter() {
+    // Utilisation de ton nom d'utilisateur GitHub comme namespace unique pour sécuriser ta clé
+    const namespace = "elyvannj-janet-github-io";
+    const key = "studio-ia-counter";
+    const url = `https://api.countapi.xyz/hit/${namespace}/${key}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error();
+        const data = await response.json();
+        document.getElementById("visitCount").textContent = data.value;
+    } catch (err) {
+        // En cas de panne temporaire du serveur de statistiques, on affiche une valeur par défaut cohérente
+        document.getElementById("visitCount").textContent = "En ligne";
+    }
 }
-updateVisitCounter();
+// Lancement asynchrone dès le démarrage de la page
+updateGlobalCounter();
+
 
 function drawLoadingScreen() {
     if (!isLoading) return;
@@ -346,19 +356,17 @@ function startCloudGeneration(promptText) {
     };
 }
 
-// CORRECTION DU DÉCLENCHEUR : Lecture sécurisée de la valeur
 function triggerGeneration() {
     const inputField = document.getElementById("cmd");
     const val = inputField.value;
     if (val.trim() !== "") { 
         startCloudGeneration(val); 
-        inputField.value = ""; // On ne vide le champ qu'APRES l'envoi réussi
+        inputField.value = ""; 
     }
 }
 
 document.getElementById("send").addEventListener("click", triggerGeneration);
 
-// Ajout du confort : Déclenchement avec la touche Entrée
 document.getElementById("cmd").addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
         triggerGeneration();
