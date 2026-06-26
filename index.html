@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA v17.0 - Global Analytics</title>
+    <title>Studio IA v17.5 - Global Live Edition</title>
     
     <style>
         :root {
@@ -217,37 +217,36 @@ let cloudInterval = null;
 let rotationAngle = 0;
 let rgbHue = 0;
 
+// Filtre de modération
 const BANNED_KEYWORDS = [
     "nsfw", "+18", "18+", "porn", "sexy", "nude", "nu ", "naked", "gore", "blood", "sang", "kill", "mort", "weapon", "arme"
 ];
 
-// --- NOUVEAU COMPTEUR CLOUD MONDIAL COMPLET ---
+// Gestion du compteur Cloud Global via CounterAPI
 async function updateGlobalCounter() {
-    // Utilisation de ton nom d'utilisateur GitHub comme namespace unique pour sécuriser ta clé
-    const namespace = "elyvannj-janet-github-io";
-    const key = "studio-ia-counter";
-    const url = `https://api.countapi.xyz/hit/${namespace}/${key}`;
+    const namespace = "studio-ia-elyvann"; 
+    const key = "visites-globales";
+    const url = `https://api.counterapi.dev/v1/${namespace}/${key}/increment`;
 
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error();
         const data = await response.json();
-        document.getElementById("visitCount").textContent = data.value;
+        document.getElementById("visitCount").textContent = data.count;
     } catch (err) {
-        // En cas de panne temporaire du serveur de statistiques, on affiche une valeur par défaut cohérente
-        document.getElementById("visitCount").textContent = "En ligne";
+        document.getElementById("visitCount").textContent = "Actif";
     }
 }
-// Lancement asynchrone dès le démarrage de la page
 updateGlobalCounter();
 
-
+// Rendu écran de chargement (Spinner + Texte RGB Lent)
 function drawLoadingScreen() {
     if (!isLoading) return;
 
     rctx.fillStyle = "#030712";
     rctx.fillRect(0, 0, SIZE, SIZE);
 
+    // Spinner
     rctx.save();
     rctx.translate(SIZE / 2, SIZE / 2 - 20);
     rctx.rotate(rotationAngle);
@@ -263,6 +262,7 @@ function drawLoadingScreen() {
     rctx.stroke();
     rctx.restore();
 
+    // Texte RGB Lent
     rctx.save();
     rctx.font = "800 15px 'Segoe UI', sans-serif";
     rctx.textAlign = "center";
@@ -356,6 +356,7 @@ function startCloudGeneration(promptText) {
     };
 }
 
+// Déclencheur sécurisé (Bouton et Entrée)
 function triggerGeneration() {
     const inputField = document.getElementById("cmd");
     const val = inputField.value;
@@ -373,6 +374,7 @@ document.getElementById("cmd").addEventListener("keypress", (e) => {
     }
 });
 
+// Gestion import fichier local
 function handleFile(img) {
     isLoading = false;
     cancelAnimationFrame(animationId);
@@ -385,24 +387,3 @@ function handleFile(img) {
     let nw = img.width * ratio; 
     let nh = img.height * ratio;
     rctx.drawImage(img, (SIZE - nw) / 2, (SIZE - nh) / 2, nw, nh);
-    statusDiv.textContent = "✓ Image locale importée";
-}
-
-document.getElementById("fileInput").addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => handleFile(img);
-            img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-rctx.fillStyle = "#030712";
-rctx.fillRect(0, 0, SIZE, SIZE);
-</script>
-</body>
-</html>
