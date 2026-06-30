@@ -356,13 +356,28 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* AJOUT : Effet de texte RGB fluide et lent en pur CSS */
         .spinner-text {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 0.75rem;
             font-weight: 700;
-            color: var(--muted);
             letter-spacing: 2px;
             text-transform: uppercase;
+            background: linear-gradient(90deg, #ff4b4b, #ffb04b, #4bff4b, #4b9fff, #b04bff, #ff4b4b);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rgb-shift 6s linear infinite, pulse-opacity 1.5s ease-in-out infinite;
+        }
+
+        @keyframes rgb-shift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 400% 0%; }
+        }
+
+        @keyframes pulse-opacity {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
         /* Responsive */
@@ -374,37 +389,30 @@
 </head>
 <body>
 
-    <!-- Header -->
     <header>
         <div class="logo">Studio <span>/</span> IA</div>
         <div class="visits">En ligne · <span id="visitCount">—</span> visites</div>
     </header>
 
-    <!-- Canvas zone -->
     <div class="canvas-zone">
         <canvas id="robot" width="800" height="600"></canvas>
 
-        <!-- Empty state -->
         <div class="empty-state" id="emptyState">
             <div class="empty-grid"></div>
             <div class="empty-icon">✦</div>
             <div class="empty-label">Décrivez une image</div>
         </div>
 
-        <!-- CSS Spinner (remplace le spinner canvas) -->
         <div class="spinner-wrap" id="spinnerWrap">
             <div class="spinner-ring"></div>
-            <div class="spinner-text">Génération…</div>
+            <div class="spinner-text">Calcul IA en cours…</div>
         </div>
 
-        <!-- Scan-line reveal -->
         <div class="scanline-reveal" id="scanReveal"></div>
     </div>
 
-    <!-- Progress rail -->
     <div class="progress-rail"><div id="bar"></div></div>
 
-    <!-- Dock -->
     <div class="dock">
         <div class="status-line">
             <div id="status">Prêt</div>
