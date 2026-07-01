@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA</title>
+    <title>Studio IA - Pro Tools</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -242,7 +242,7 @@
             align-items: center;
         }
 
-        .file-btn {
+        .tool-btn {
             flex-shrink: 0;
             width: 46px;
             height: 46px;
@@ -255,13 +255,19 @@
             align-items: center;
             justify-content: center;
             font-size: 1rem;
-            transition: border-color 0.2s, color 0.2s, background 0.2s;
+            transition: all 0.2s;
         }
 
-        .file-btn:hover {
+        .tool-btn:hover {
             border-color: var(--accent);
             color: var(--text);
             background: rgba(99, 102, 241, 0.08);
+        }
+        
+        .tool-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: var(--border);
         }
 
         .input-wrap {
@@ -292,6 +298,24 @@
         }
 
         input#cmd::placeholder { color: var(--muted); }
+
+        /* Bouton magique d'amélioration */
+        .magic-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent-2);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding-right: 14px;
+            transition: transform 0.2s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .magic-btn:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
 
         .send-btn {
             flex-shrink: 0;
@@ -356,7 +380,6 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* AJOUT : Effet de texte RGB fluide et lent en pur CSS */
         .spinner-text {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 0.75rem;
@@ -381,9 +404,11 @@
         }
 
         /* Responsive */
-        @media (max-width: 480px) {
+        @media (max-width: 580px) {
             header { padding: 14px 16px 12px; }
             .dock { padding: 14px 14px 18px; }
+            .tool-btn { width: 40px; height: 40px; }
+            .send-btn { height: 40px; padding: 0 14px; }
         }
     </style>
 </head>
@@ -420,14 +445,26 @@
         </div>
         <div class="input-row">
             <input type="file" id="fileInput" accept="image/*">
-            <button class="file-btn" title="Importer une image" onclick="document.getElementById('fileInput').click()">
+            
+            <button class="tool-btn" title="Importer une image" onclick="document.getElementById('fileInput').click()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
                     <polyline points="21 15 16 10 5 21"/>
                 </svg>
             </button>
+
+            <button class="tool-btn" id="downloadBtn" title="Télécharger l'image" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+            </button>
+
+            <button class="tool-btn" id="randomBtn" title="Idée de prompt aléatoire">🎲</button>
+
             <div class="input-wrap">
                 <input id="cmd" placeholder="Un loup mécanique futuriste sous une pluie de néon…" autocomplete="off" spellcheck="false">
+                
+                <button class="magic-btn" id="magicBtn" title="Améliorer le prompt (Style Pro)">✨</button>
             </div>
             <button class="send-btn" id="send">Générer</button>
         </div>
@@ -443,6 +480,10 @@
     const scanReveal = document.getElementById("scanReveal");
     const emptyState = document.getElementById("emptyState");
     const sendBtn = document.getElementById("send");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const randomBtn = document.getElementById("randomBtn");
+    const magicBtn = document.getElementById("magicBtn");
+    const inputField = document.getElementById("cmd");
 
     let isLoading = false;
     let cloudInterval = null;
@@ -450,6 +491,14 @@
     let currentSeed = null;
 
     const BANNED = ["nsfw", "+18", "18+", "porn", "sexy", "nude", "nu ", "naked", "gore", "blood", "sang", "kill", "mort", "weapon", "arme"];
+
+    const RANDOM_PROMPTS = [
+        "A cyberpunk cat sitting on neon ledge, cinematic cyberpunk cityscape, 8k resolution",
+        "A mystical floating island with waterfalls above purple clouds, fantasy concept art",
+        "A futuristic astronaut discovering an ancient glowing alien artifact, dark ambient lighting",
+        "A mechanical cybernetic owl with glowing blue laser eyes, photorealistic, intricate gears",
+        "A lost synthwave city under a giant holographic grid sunset, retro retro-futurism style"
+    ];
 
     // ── Counter ──
     async function updateCounter() {
@@ -507,15 +556,14 @@
 
     function triggerScanReveal() {
         scanReveal.classList.remove("active");
-        void scanReveal.offsetWidth; // force reflow
+        void scanReveal.offsetWidth; 
         scanReveal.classList.add("active");
         setTimeout(() => scanReveal.classList.remove("active"), 1300);
     }
 
     // ── Generation ──
     function generate() {
-        const input = document.getElementById("cmd");
-        const prompt = input.value.trim();
+        const prompt = inputField.value.trim();
         if (!prompt || isLoading) return;
 
         if (checkSafety(prompt)) {
@@ -525,6 +573,7 @@
 
         isLoading = true;
         sendBtn.disabled = true;
+        downloadBtn.disabled = true;
         emptyState.classList.add("hidden");
         spinnerWrap.classList.add("active");
         setStatus("Génération en cours…");
@@ -547,15 +596,14 @@
             completeBar();
             isLoading = false;
             sendBtn.disabled = false;
+            downloadBtn.disabled = false;
 
-            // Draw to canvas
             rctx.clearRect(0, 0, robotCanvas.width, robotCanvas.height);
             rctx.drawImage(img, 0, 0, robotCanvas.width, robotCanvas.height);
 
-            // Trigger scan reveal
             triggerScanReveal();
             setStatus("Image générée", "success");
-            input.value = "";
+            inputField.value = "";
         };
 
         img.onerror = () => {
@@ -567,8 +615,35 @@
         };
     }
 
-    document.getElementById("send").addEventListener("click", generate);
-    document.getElementById("cmd").addEventListener("keydown", e => {
+    // Fonction d'amélioration du prompt (Upscale)
+    magicBtn.addEventListener("click", () => {
+        const currentText = inputField.value.trim();
+        if(currentText !== "") {
+            inputField.value = `${currentText}, photorealistic, highly detailed, 8k resolution, cinematic lighting, masterpiece, volumetric smoke, ray tracing`;
+            setStatus("Prompt amélioré ✨", "success");
+        } else {
+            setStatus("Écrivez d'abord un prompt à améliorer !");
+        }
+    });
+
+    // Fonction d'idées de prompts (Random)
+    randomBtn.addEventListener("click", () => {
+        const randomIndex = Math.floor(Math.random() * RANDOM_PROMPTS.length);
+        inputField.value = RANDOM_PROMPTS[randomIndex];
+        setStatus("Idée chargée 🎲");
+    });
+
+    // Fonction de Téléchargement sécurisé du Canvas
+    downloadBtn.addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.download = `studio-ia-${currentSeed || 'export'}.png`;
+        link.href = robotCanvas.toDataURL("image/png");
+        link.click();
+        setStatus("Image téléchargée 💾", "success");
+    });
+
+    sendBtn.addEventListener("click", generate);
+    inputField.addEventListener("keydown", e => {
         if (e.key === "Enter") generate();
     });
 
@@ -583,6 +658,7 @@
                 emptyState.classList.add("hidden");
                 spinnerWrap.classList.remove("active");
                 resetBar();
+                downloadBtn.disabled = false;
                 const r = robotCanvas.width / robotCanvas.height;
                 const ir = img.width / img.height;
                 let sx = 0, sy = 0, sw = img.width, sh = img.height;
