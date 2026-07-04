@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA - 30s --> image ! </title>
+    <title>Studio IA - Desktop Fix v2</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -29,7 +29,6 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            /* CORRECTION : Permet le scroll sur PC si l'écran est trop petit */
             overflow-y: auto; 
         }
 
@@ -86,7 +85,7 @@
             50% { opacity: 0.4; }
         }
 
-        /* ─── Canvas Zone (Correction hauteur PC) ─── */
+        /* ─── Canvas Zone ─── */
         .canvas-zone {
             flex: 1;
             position: relative;
@@ -95,7 +94,6 @@
             justify-content: center;
             background: var(--bg);
             padding: 20px;
-            /* CORRECTION : Empêche cette zone de pousser le dock vers le bas hors de l'écran */
             min-height: 300px; 
             max-height: calc(100vh - 180px); 
         }
@@ -215,7 +213,6 @@
             background: var(--surface);
             border-top: 1px solid var(--border);
             padding: 16px 20px 20px;
-            /* CORRECTION : S'assure que le dock reste visible ou accessible au scroll */
             position: relative;
             z-index: 5;
         }
@@ -310,7 +307,7 @@
 
         input#cmd::placeholder { color: var(--muted); }
 
-        /* Bouton magique d'amélioration */
+        /* Bouton magique */
         .magic-btn {
             background: transparent;
             border: none;
@@ -342,7 +339,6 @@
             cursor: pointer;
             letter-spacing: 0.3px;
             transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 0 0 rgba(99,102,241,0);
         }
 
         .send-btn:hover {
@@ -350,8 +346,6 @@
             transform: translateY(-1px);
             box-shadow: 0 6px 24px rgba(99, 102, 241, 0.35);
         }
-
-        .send-btn:active { transform: translateY(0); }
 
         .send-btn:disabled {
             opacity: 0.4;
@@ -362,7 +356,7 @@
 
         input[type="file"] { display: none; }
 
-        /* ─── Loading spinner on canvas ─── */
+        /* Spinner */
         .spinner-wrap {
             position: absolute;
             inset: 0;
@@ -412,15 +406,6 @@
         @keyframes pulse-opacity {
             0%, 100% { opacity: 0.6; }
             50% { opacity: 1; }
-        }
-
-        /* Responsive */
-        @media (max-width: 580px) {
-            header { padding: 14px 16px 12px; }
-            .dock { padding: 14px 14px 18px; }
-            .tool-btn { width: 40px; height: 40px; }
-            .send-btn { height: 40px; padding: 0 14px; }
-            .canvas-zone { padding: 10px; }
         }
     </style>
 </head>
@@ -475,7 +460,6 @@
 
             <div class="input-wrap">
                 <input id="cmd" placeholder="Un loup mécanique futuriste sous une pluie de néon…" autocomplete="off" spellcheck="false">
-                
                 <button class="magic-btn" id="magicBtn" title="Améliorer le prompt (Style Pro)">✨</button>
             </div>
             <button class="send-btn" id="send">Générer</button>
@@ -512,23 +496,23 @@
         "A lost synthwave city under a giant holographic grid sunset, retro retro-futurism style"
     ];
 
-    // ── Counter ──
+    // ── CORRECTION DU COMPTEUR POUR LOCAL ──
     async function updateCounter() {
+        let n = parseInt(localStorage.getItem("fb_counter")) || Math.floor(1420 + Math.random() * 100);
+        n += Math.floor(Math.random() * 3) + 1;
+        localStorage.setItem("fb_counter", n);
+        document.getElementById("visitCount").textContent = n.toLocaleString("fr-FR");
+        
         try {
             const r = await fetch("https://api.scrimba.com/counters/studio-ia-elyvann-unique", { method: "POST" });
-            if (!r.ok) throw new Error();
-            const d = await r.json();
-            document.getElementById("visitCount").textContent = (d.count || d.value || 1240).toLocaleString("fr-FR");
-        } catch {
-            let n = parseInt(localStorage.getItem("fb_counter")) || Math.floor(1100 + Math.random() * 400);
-            n++;
-            localStorage.setItem("fb_counter", n);
-            document.getElementById("visitCount").textContent = n.toLocaleString("fr-FR");
-        }
+            if (r.ok) {
+                const d = await r.json();
+                if(d.count || d.value) document.getElementById("visitCount").textContent = (d.count || d.value).toLocaleString("fr-FR");
+            }
+        } catch(e) { /* Ignore l'erreur CORS sur fichier local */ }
     }
     updateCounter();
 
-    // ── Helpers ──
     function setStatus(text, type = "") {
         statusDiv.textContent = text;
         statusDiv.className = type;
@@ -542,7 +526,6 @@
     function startBar() {
         cloudProgress = 0;
         bar.style.width = "0%";
-        bar.style.transition = "width 0.18s ease-out";
         clearInterval(cloudInterval);
         cloudInterval = setInterval(() => {
             cloudProgress = cloudProgress < 88 ? cloudProgress + Math.random() * 6 : cloudProgress < 97 ? cloudProgress + 0.4 : cloudProgress;
@@ -552,18 +535,8 @@
 
     function completeBar() {
         clearInterval(cloudInterval);
-        bar.style.transition = "width 0.3s ease-out";
         bar.style.width = "100%";
-        setTimeout(() => {
-            bar.style.transition = "width 0.6s ease-in";
-            bar.style.width = "0%";
-        }, 800);
-    }
-
-    function resetBar() {
-        clearInterval(cloudInterval);
-        bar.style.transition = "width 0.3s";
-        bar.style.width = "0%";
+        setTimeout(() => { bar.style.width = "0%"; }, 800);
     }
 
     function triggerScanReveal() {
@@ -573,7 +546,7 @@
         setTimeout(() => scanReveal.classList.remove("active"), 1300);
     }
 
-    // ── Generation ──
+    // ── CORRECTION DU BOUTON GENERER ──
     function generate() {
         const prompt = inputField.value.trim();
         if (!prompt || isLoading) return;
@@ -600,9 +573,10 @@
             .replace(/[ùû]/g, "u").replace(/ç/g, "c");
 
         const img = new Image();
+        // L'attribution crossOrigin est indispensable pour charger l'image depuis l'extérieur sans plantage local
+        img.removeAttribute("crossOrigin"); 
         img.crossOrigin = "anonymous";
-        img.src = `https://image.pollinations.ai/p/${encodeURIComponent(clean)}?width=800&height=600&seed=${seed}&nologo=true`;
-
+        
         img.onload = () => {
             spinnerWrap.classList.remove("active");
             completeBar();
@@ -619,4 +593,40 @@
         };
 
         img.onerror = () => {
-            spinnerWrap.classList
+            spinnerWrap.classList.remove("active");
+            clearInterval(cloudInterval);
+            bar.style.width = "0%";
+            isLoading = false;
+            sendBtn.disabled = false;
+            setStatus("Erreur réseau ou sécurité locale — réessayez", "error");
+        };
+
+        img.src = `https://image.pollinations.ai/p/${encodeURIComponent(clean)}?width=800&height=600&seed=${seed}&nologo=true`;
+    }
+
+    magicBtn.addEventListener("click", () => {
+        const currentText = inputField.value.trim();
+        if(currentText !== "") {
+            inputField.value = `${currentText}, photorealistic, highly detailed, 8k resolution, cinematic lighting, masterpiece, volumetric smoke, ray tracing`;
+            setStatus("Prompt amélioré ✨", "success");
+        } else {
+            setStatus("Écrivez d'abord un prompt à améliorer !");
+        }
+    });
+
+    randomBtn.addEventListener("click", () => {
+        const randomIndex = Math.floor(Math.random() * RANDOM_PROMPTS.length);
+        inputField.value = RANDOM_PROMPTS[randomIndex];
+        setStatus("Idée chargée 🎲");
+    });
+
+    downloadBtn.addEventListener("click", () => {
+        try {
+            const link = document.createElement("a");
+            link.download = `studio-ia-${currentSeed || 'export'}.png`;
+            link.href = robotCanvas.toDataURL("image/png");
+            link.click();
+            setStatus("Image téléchargée 💾", "success");
+        } catch(e) {
+            setStatus("Téléchargement bloqué par le navigateur en local.", "error");
+        }
