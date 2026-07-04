@@ -25,20 +25,19 @@
     --font-mono: 'DM Mono', monospace;
   }
 
-  html, body {
-    height: 100%;
+  html {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-mono);
     font-size: 14px;
     line-height: 1.7;
-    overflow: hidden;
   }
 
   body {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
+    overflow-y: auto; /* Permet le défilement vertical global */
   }
 
   header {
