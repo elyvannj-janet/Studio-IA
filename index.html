@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA - Desktop & Mobile Pro</title>
+    <title>Studio IA - 30s --> image ! </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -26,10 +26,11 @@
             font-family: 'Inter', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
-            min-height: 100dvh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            /* CORRECTION : Permet le scroll sur PC si l'écran est trop petit */
+            overflow-y: auto; 
         }
 
         /* ─── Header ─── */
@@ -85,16 +86,18 @@
             50% { opacity: 0.4; }
         }
 
-        /* ─── Canvas Zone (Correction ordinateur) ─── */
+        /* ─── Canvas Zone (Correction hauteur PC) ─── */
         .canvas-zone {
             flex: 1;
             position: relative;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--bg);
             padding: 20px;
+            /* CORRECTION : Empêche cette zone de pousser le dock vers le bas hors de l'écran */
+            min-height: 300px; 
+            max-height: calc(100vh - 180px); 
         }
 
         canvas#robot {
@@ -212,6 +215,9 @@
             background: var(--surface);
             border-top: 1px solid var(--border);
             padding: 16px 20px 20px;
+            /* CORRECTION : S'assure que le dock reste visible ou accessible au scroll */
+            position: relative;
+            z-index: 5;
         }
 
         /* Status line */
@@ -594,7 +600,6 @@
             .replace(/[ùû]/g, "u").replace(/ç/g, "c");
 
         const img = new Image();
-        // Correction Ordinateur : L'attribut crossOrigin doit être défini AVANT la source
         img.crossOrigin = "anonymous";
         img.src = `https://image.pollinations.ai/p/${encodeURIComponent(clean)}?width=800&height=600&seed=${seed}&nologo=true`;
 
@@ -614,78 +619,4 @@
         };
 
         img.onerror = () => {
-            spinnerWrap.classList.remove("active");
-            resetBar();
-            isLoading = false;
-            sendBtn.disabled = false;
-            setStatus("Le serveur n'a pas répondu — réessayez", "error");
-        };
-    }
-
-    // Fonction d'amélioration du prompt (Upscale)
-    magicBtn.addEventListener("click", () => {
-        const currentText = inputField.value.trim();
-        if(currentText !== "") {
-            inputField.value = `${currentText}, photorealistic, highly detailed, 8k resolution, cinematic lighting, masterpiece, volumetric smoke, ray tracing`;
-            setStatus("Prompt amélioré ✨", "success");
-        } else {
-            setStatus("Écrivez d'abord un prompt à améliorer !");
-        }
-    });
-
-    // Fonction d'idées de prompts (Random)
-    randomBtn.addEventListener("click", () => {
-        const randomIndex = Math.floor(Math.random() * RANDOM_PROMPTS.length);
-        inputField.value = RANDOM_PROMPTS[randomIndex];
-        setStatus("Idée chargée 🎲");
-    });
-
-    // Fonction de Téléchargement sécurisé du Canvas
-    downloadBtn.addEventListener("click", () => {
-        const link = document.createElement("a");
-        link.download = `studio-ia-${currentSeed || 'export'}.png`;
-        link.href = robotCanvas.toDataURL("image/png");
-        link.click();
-        setStatus("Image téléchargée 💾", "success");
-    });
-
-    sendBtn.addEventListener("click", generate);
-    inputField.addEventListener("keydown", e => {
-        if (e.key === "Enter") generate();
-    });
-
-    // ── File import ──
-    document.getElementById("fileInput").addEventListener("change", e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = ev => {
-            const img = new Image();
-            img.onload = () => {
-                emptyState.classList.add("hidden");
-                spinnerWrap.classList.remove("active");
-                resetBar();
-                downloadBtn.disabled = false;
-                const r = robotCanvas.width / robotCanvas.height;
-                const ir = img.width / img.height;
-                let sx = 0, sy = 0, sw = img.width, sh = img.height;
-                if (ir > r) { sw = img.height * r; sx = (img.width - sw) / 2; }
-                else { sh = img.width / r; sy = (img.height - sh) / 2; }
-                rctx.clearRect(0, 0, robotCanvas.width, robotCanvas.height);
-                rctx.drawImage(img, sx, sy, sw, sh, 0, 0, robotCanvas.width, robotCanvas.height);
-                triggerScanReveal();
-                setStatus("Image importée", "success");
-                seedLabel.textContent = "local";
-            };
-            img.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-        e.target.value = "";
-    });
-
-    // ── Init canvas ──
-    rctx.fillStyle = "#05070f";
-    rctx.fillRect(0, 0, robotCanvas.width, robotCanvas.height);
-</script>
-</body>
-</html>
+            spinnerWrap.classList
