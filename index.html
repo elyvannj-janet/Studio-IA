@@ -3,497 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Création de Scripts HTML Sur Mesure - 🚀 Prêt à Démarrer !</title>
+    <title>Construction de Script HTML - 🚀 Version Finale</title>
 
-    <!-- CSS Intégré pour le style et les animations ultra-visibles -->
+    <!-- CSS Intégré -->
     <style>
-        /* Variables de couleur (Palette professionnelle) */
         :root {
-            --primary-color: #4CAF50; /* Vert : Succès, Action positive */
-            --secondary-color: #2980b9; /* Bleu Discord / Confiance : Couleur principale du site */
+            --primary-color: #4CAF50;
+            --secondary-color: #2980b9;
             --text-dark: #333;
             --background-light: #ecf0f1;
         }
 
-        /* GENERAL STYLING & TRANSITIONS (Le cœur de l'animation) */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
-            color: var(--text-dark);
-            background-color: #ffffff;
-            overflow-x: hidden; /* Empêche le défilement horizontal étrange */
+            background-color: var(--background-light);
+            transition: all 0.5s ease;
         }
 
         /* ============================================== */
-        /* HEADER : Style d'accroche */
+        /* LOADER / ANIMATION */
         /* ============================================== */
-        header {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Ombre très visible */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
-        header h1 {
-            font-size: clamp(2em, 5vw, 3.5em);
-            margin-bottom: 10px;
-        }
-
-        /* Mise en avant du "GRATUIT" (Le message clé) */
-        .free-highlight {
-            display: block;
-            font-size: clamp(1.8em, 5vw, 2.5em);
-            color: #e74c3c; /* Rouge intentionnel et ciblé */
-            font-weight: 900;
-            margin-top: 10px;
-        }
-
-        /* Conteneur principal */
-        .container {
-            width: 85%;
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
+        .loader-overlay.active {
+            opacity: 1;
+            pointer-events: none;
         }
 
         /* ============================================== */
-        /* SECTION GÉNÉRIQUE (Animations Globales) */
+        /* CONTAINER DE CONTENT */
+        .showcase-container {
+            padding: 40px;
+            margin-top: 40px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ============================================== */
+        /* HEADER : Accueil dynamique */
         /* ============================================== */
         section {
             background-color: white;
-            padding: 35px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Ombre plus forte */
-            margin-bottom: 40px;
-            /* Transition générale pour rendre le survol agréable */
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
-        }
-
-        section:hover {
-             transform: translateY(-8px); /* Plus de soulèvement au survol */
-             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        }
-
-
-        h2 {
-            color: var(--secondary-color);
-            text-align: center;
+            padding: 40px;
             margin-bottom: 30px;
-            font-size: clamp(1.8em, 4vw, 2.5em);
         }
 
         /* ============================================== */
-        /* SHOWCASE DES RÉALISATIONS (INTERACTIF) */
+        /* FEATURES DÉMOZINANT */
         /* ============================================== */
-        #showcases {
-            background-color: var(--background-light);
-            border-radius: 12px;
-        }
-
-        .showcase-container {
+        .feature-list {
             display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        
-        /* L'animation la plus importante : Le Pop sur hover */
-        .showcase-item {
-            background-color: #2c3e50;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            /* Transition très lente et spectaculaire */
-            transition: all 0.6s cubic-bezier(0.175, 0.88, 0.32, 1.275); /* Super ressort */
-        }
-
-        /* L'effet RGB au survol */
-        .showcase-item:hover {
-             transform: scale(1.03) translateY(-10px);
-             box-shadow: 0 20px 40px rgba(76, 175, 80, 0.5), /* Ombre Verte */
-                         0 0 50px #2980b9; /* Aura Bleue (Simule RGB) */
-        }
-
-        /* ============================================== */
-        /* CARTE DE FONCTIONNALITÉS */
-        /* ============================================== */
-        #services .feature-list {
-            display: flex;
-            flex-wrap: wrap;
             gap: 25px;
-            justify-content: center;
-            margin-top: 30px;
+            flex-wrap: wrap;
         }
 
         .feature-item {
-            background: var(--background-light);
-            padding: 25px;
+            background: white;
+            padding: 20px;
             border-radius: 10px;
-            flex: 1 1 300px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            /* Transition générale pour les cartes */
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            margin: 5px;
+            transition: transform 0.3s ease;
         }
 
         .feature-item:hover {
-             transform: scale(1.05) translateY(-8px); /* Effet de ressort au survol */
-             box-shadow: 0 15px 40px rgba(41, 128, 217, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         /* ============================================== */
-        /* CALL TO ACTION (Le bouton Discord) */
+        /* ANIMATION DE SURREAL (SURS ENTRE LA BUTTE) */
         /* ============================================== */
-        .cta-box {
-            background: linear-gradient(135deg, #e8f6fa 0%, #dcecf9 100%);
-            padding: 50px;
-            text-align: center;
-            border: 4px solid var(--secondary-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Bouton Discord (Animation Hyper-Visible) */
-        .discord-button {
-            display: inline-block;
-            background-color: var(--secondary-color);
+        .showcase-item {
+            background: var(--secondary-color);
             color: white;
-            padding: 20px 45px; /* Plus grand et impactant */
-            text-decoration: none;
-            border-radius: 50px;
-            font-size: 1.3em;
-            font-weight: bold;
-            /* Transition très longue pour un effet de mouvement continu */
-            transition: all 0.6s cubic-bezier(0.2, 1, 0.1, 1);
-            box-shadow: 0 8px 25px rgba(41, 128, 217, 0.5);
+            padding: 30px;
+            border-radius: 10px;
+            transition: transform 0.6s ease, box-shadow 0.6s ease;
+            cursor: pointer;
         }
 
-        /* Animation du bouton */
-        .discord-button:hover {
-            background-color: #1e67a8;
-            transform: scale(1.08) translateY(-5px); /* Plus grand et soulèvement maximal */
-            box-shadow: 0 15px 35px rgba(41, 128, 217, 0.8); /* Ombre très forte pour l'effet dramatique */
+        .showcase-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
 
         /* ============================================== */
-        /* MODALE WINDOW (Pop-up) - Les styles restent les mêmes car ils sont efficaces */
+        /* MODALE DE DÉCLARATION */
         /* ============================================== */
         #modal-overlay {
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none; /* Caché par défaut */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            transition: opacity 0.5s ease;
         }
 
         #modal-box {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 800px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
 
-        /* Transition pour l'apparition de la modale */
-        #modal-overlay.active { display: flex; }
-
-
-        /* ============================================== */
-        /* FOOTER et UTILITAIRES */
-        /* ============================================== */
-        footer {
-            background-color: #2c3e50;
-            color: white;
+        #modal-title {
+            font-size: 2em;
+            color: var(--primary-color);
             text-align: center;
-            padding: 25px;
-            margin-top: 30px;
+            margin-bottom: 10px;
         }
 
-    </style>
-</head>
-<body id="loader-overlay">
+        /* ============================================== */
+        /* CONTENUME PRINCIPAL */
+        /* ============================================== */
+        <section id="loader-content">
+            <h1 style="color: var(--primary-color);">🚀 Construction du Site Web</h1>
+            <p>Nous construisons votre site web étape par étape. Tout est transparent et interactif !</p>
 
-    <!-- ************************************** -->
-    <!-- L'ÉCRAN DE CONSTRUCTION (Visible au Démarrage) -->
-    <!-- ************************************** -->
-    <div id="loader-content">
-        <h1 style="font-size: 2em; margin-bottom: 10px;">🚧 Initialisation du Système Web...</h1>
-        <p>Nous installons les fondations de votre succès digital.</p>
+            <!-- ANIMATION DE LA BUTTE -->
+            <div class="loader-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
 
-        <!-- Simulation des Briques -->
-        <div class="construction-status">
-            <h4 style="color: #34495e;">Structure & Style</h4>
-            <div class="brick-container">
-                <div class="brick" id="brick1">Fondation</div>
-                <div class="brick" id="brick2">Mise en page</div>
-                <div class="brick" id="brick3">Design UI/UX</div>
-            </div >
-        </div>
-
-        <!-- Barre de progression globale -->
-        <div class="progress-container">
-            <div id="progress-bar" style="width: 0%; background-color: #4CAF50;"></div>
-        </div>
-        <p style="margin-top: 20px; font-size: 1.2em;">Statut : <span id="status-text" style="color: var(--primary-color); font-weight: bold;">Vérification des dépendances...</span></p>
-    </div>
-
-    <!-- ************************************** -->
-    <!-- CONTENU PRINCIPAL (Visible après le chargement) -->
-    <!-- ************************************** -->
-    <main id="site-content" style="opacity: 0;">
-        
-        <!-- HEADER VISIBLE APRÈS CHARGEMENT -->
-        <header>
-            <h1>🌐 Script HTML Sur Mesure</h1>
-            <span class="free-highlight">C'est 💯% GRATUIT ! 💰</span>
-            <p style="margin-top: 10px;">Développez votre projet web de rêve sans dépenser un centime.</p>
-        </header>
-
-        <!-- SECTION 1 : Le Pitch (Ce que vous offrez) -->
-        <section id="services">
-            <h2 data-visible="false">💡 Qu'est-ce qu'un Script HTML Sur Mesure ?</h2>
-            <p style="text-align: center; font-size: 1.2em; max-width: 800px; margin: 0 auto 40px;">Un script sur mesure est votre vitrine digitale ! Nous créons une page web unique, parfaitement adaptée à vos besoins (portfolio, petite boutique virtuelle, présentation...).</p>
-
-            <div class="feature-list">
-                <!-- On ajoute un onclick pour que les exemples de la modale soient cliquables -->
-                <div class="feature-item" onclick="displayModal('shop'); event.stopPropagation();">
-                    <h3 title="">🎨 Design Unique</h3>
-                    <p>Des couleurs et une mise en page 100% adaptées à votre identité visuelle.</p>
+            <!-- CONTENU DÉMOZINANT -->
+            <div class="showcase-container">
+                <h2>🎯 Vos Besoins</h2>
+                <div class="feature-list">
+                    <div class="feature-item" onclick="displayModal('shop')">🛍️ Boutique de Chaussures</div>
+                    <div class="feature-item" onclick="displayModal('portfolio')">🖼️ Galerie d'Artiste</div>
+                    <div class="feature-item" onclick="displayModal('local')">☕ Café / Restaurant</div>
                 </div>
-                <div class="feature-item" onclick="displayModal('shop'); event.stopPropagation();">
-                    <h3 title="">🛠️ Fonctionnalité Complète</h3>
-                    <p>Intégration de formulaires, galeries d'images ou fonctionnalités interactives simples.</p>
-                </div>
-                <div class="feature-item" onclick="displayModal('shop'); event.stopPropagation();">
-                    <h3 title="">🚀 Optimisation Mobile (Responsive)</h3>
-                    <p>Votre site sera parfait et utilisable sur téléphones, tablettes et ordinateurs.</p>
+
+                <!-- MODALE DE DÉCLARATION -->
+                <div id="modal" class="modal">
+                    <div class="modal-content">
+                        <h3>🎉 Votre Projet</h3>
+                        <p>Nous vous aidons à créer un site web parfait, sans frais. Découvrez comment !</p>
+                        <button id="closeBtn">Fermer</button>
+                    </div>
                 </div>
             </div>
         </section>
 
-         <!-- SHOWCASE DES RÉALISATIONS (Exemples Interactifs) -->
+        <!-- SHOWCASE DES RÉALISATIONS -->
         <section id="showcases">
-            <h2 data-visible="false">🖼️ Quelques Exemples de Nos Réalisations</h2>
-            <p style="text-align: center; max-width: 900px; margin: -25px auto 40px;">Découvrez la diversité des projets que nous pouvons créer pour vous. (Cliquez sur un exemple pour voir le mini-aperçu !)</p>
+            <h2>🖼️ Vos Projets</h2>
+            <p style="text-align: center; font-size: 1.3em;">Découvrez nos réalisations.</p>
 
-            <div class="showcase-container">
-                <!-- L'attribut onclick est crucial ici -->
-                <div class="showcase-item" data-type="shop" onclick="displayModal('shop'); event.stopPropagation();">
-                    <h4 style="color: white;">👟 Boutique de Chaussures</h4>
-                    <p>Exemple d'e-commerce avec galerie produit et panier simulé.</p>
-                </div>
-                <div class="showcase-item" data-type="portfolio" onclick="displayModal('portfolio'); event.stopPropagation();">
-                    <h4 style="color: white;">📸 Photographe / Artiste</h4>
-                    <p>Exemple de portfolio avec galerie plein écran et présentation artistique.</p>
-                </div>
-                 <div class="showcase-item" data-type="local" onclick="displayModal('local'); event.stopPropagation();">
-                    <h4 style="color: white;">☕ Café / Restaurant</h4>
-                    <p>Exemple de page vitrine avec menu interactif et horaires mis à jour.</p>
-                </div>
-            </div >
+            <div class="showcase-item" onclick="displayModal('shop')">
+                <h4>🛍️ Boutique de Chaussures</h4>
+                <p>Un magasin en ligne avec produits variés et un design moderne.</p>
+            </div>
+            <div class="showcase-item" onclick="displayModal('portfolio')">
+                <h4>🖼️ Galerie Artistique</h4>
+                <p>Une collection d'œuvres d'artistes locaux et internationaux.</p>
+            </div>
+            <div class="showcase-item" onclick="displayModal('local')">
+                <h4>☕ Café / Restaurant</h4>
+                <p>Un espace convivial avec une carte et des horaires précis.</p>
+            </div>
         </section>
+    </style>
 
-        <!-- SECTION 2 : L'Incitation (Pourquoi nous choisir) -->
-        <section id="gratuit">
-            <h2 data-visible="false" style="color: #e74c3c;">✅ Notre Promesse : ZÉRO Frais. 100% Garantie</h2>
-            <p style="text-align: center; font-size: 1.4em; color: #e74c3c; font-weight: bold;">Vous avez un projet ? Nous avons la solution... et elle ne coûte absolument rien.</p>
-             <p class="mt-5" style="max-width: 800px; margin: 20px auto; text-align: center;">Notre objectif est de vous offrir les outils numériques pour commencer votre aventure web, sans aucune barrière financière.</p>
-        </section>
+    <!-- JS (Animation + Modale) -->
+    <script>
+        // ============================================== */
+        // ============================================== */
+        // FONCTIONS DE L'ANIMATION ET DE LA MODALE
+        // ==============================================
 
-        <!-- SECTION 3 : L'Appel à l'Action (Le CTA) -->
-        <div class="cta-box">
-            <h3 data-visible="false" style="color: #27ae60;">🚀 Prêt à concrétiser votre projet ?</h3>
-            <p style="font-size: 1.2em; margin-bottom: 25px;">Pour commencer, rejoignez notre serveur Discord ! C'est là que nous discutons de vos idées et où nous vous fournirons le lien pour démarrer la création gratuite.</p>
-            
-            <!-- LIEN DISCORD MIS À JOUR -->
-            <a href="https://discord.gg/7R4PAtvUvg" class="discord-button" target="_blank">
-                ➡️ Rejoindre notre Communauté Discord ⬅️
-            </a>
-        </div>
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalContent = document.getElementById('modal-content');
+        const closeBtn = document.querySelector('.close-btn');
 
-    </main><!-- Fin du contenu principal -->
-
-
-    <!-- ============================================ -->
-    <!-- MODAL WINDOW (Le pop-up de présentation) -->
-    <!-- ============================================ -->
-    <div id="modal-overlay" style="display:none;">
-        <div id="modal-box">
-            <button class="close-btn" onclick="closeModal()" style="float: right; background: none; border: none; font-size: 1.5em; cursor: pointer;">&times;</button>
-            <h3 id="modal-title">Aperçu de votre Script Web</h3>
-            <div class="simulated-preview" id="modal-content">
-                <!-- Le contenu généré par JavaScript apparaîtra ici -->
-            </div >
-        </div>
-    </div >
-
-    <!-- FOOTER : Infos de bas de page (Année mise à jour) -->
-    <footer style="background-color: #2c3e50;">
-        <p>&copy; Copyright Script Création Sur Mesure. Tous droits réservés | &copy; 2026</p>
-    </footer>
-
-<script>
-    // ===============================================
-    // --- GESTION DU LOADER (Construction Brique par Brique) ---
-    // ===============================================
-    const loaderOverlay = document.getElementById('loader-overlay');
-    const progressBar = document.getElementById('progress-bar');
-    const statusText = document.getElementById('status-text');
-    const brickElements = [
-        document.getElementById('brick1'), 
-        document.getElementById('brick2'), 
-        document.getElementById('brick3')
-    ];
-    const siteContent = document.getElementById('site-content');
-
-    function simulateLoading() {
-        let stepIndex = 0;
-        const totalSteps = brickElements.length; 
-
-        // Fonction récursive pour simuler la construction brique par brique
-        function runStep() {
-            if (stepIndex < totalSteps) {
+        // 🎬 Animation de la brique (effet de survol)
+        function animateBrick() {
+            const items = document.querySelectorAll('.showcase-item');
+            items.forEach(item => {
+                item.style.transform = `scale(${item.style.transform});`);
                 setTimeout(() => {
-                    brickElements[stepIndex].classList.add('active');
-                    let stepName = document.querySelector('#loader-content h4').textContent.trim();
-
-                    statusText.textContent = `Étape ${stepIndex + 1}/${totalSteps} : Positionnement de la ${stepName}`;
-                }, stepIndex * 600); // Délai entre les étapes
-            } else {
-                // Toutes les briques posées, on passe à l'étape finale de chargement.
-                setTimeout(() => {
-                    statusText.textContent = "Optimisation du réseau et finalisation...";
-                    progressBar.style.width = '70%';
-
-                    setTimeout(completeLoad, 2000); // Attendre le temps final
-                }, 1500);
-            }
-            stepIndex++;
-            // Appelle la prochaine étape après un délai pour simuler l'action
-            setTimeout(runStep, stepIndex < totalSteps ? (stepIndex * 600) + 800 : 2000);
-        }
-
-        function completeLoad() {
-            // Simulation de fin de charge et révélation du contenu
-            let currentProgress = parseFloat(progressBar.style.width);
-             let stepIndex = 0;
-             
-             function finalStep() {
-                 if (stepIndex < 3) {
-                    setTimeout(() => {
-                        const progressIncrease = 20;
-                        progressBar.style.width = `${Math.min(100, currentProgress + progressIncrease)}%`;
-
-                        stepIndex++;
-                        setTimeout(finalStep, 800); // Attendre le temps de l'animation
-                    }, stepIndex * 400); 
-                 } else {
-                     // Tout est prêt !
-                     setTimeout(() => {
-                         loaderOverlay.classList.add('hidden'); 
-                         siteContent.style.opacity = 1; // Révèle le contenu principal
-                     }, 800);
-                 }
-            }
-
-            finalStep();
-        }
-
-
-        // --- GESTION DES ÉVÉNEMENTS (Pop-ups et Clics) ---
-        function setupEventListeners() {
-            const showcaseItems = document.querySelectorAll('.showcase-item');
-            const modalOverlay = document.getElementById('modal-overlay');
-
-            showcaseItems.forEach(item => {
-                // Le clic doit déclencher la modale ET éviter de suivre un lien théorique
-                item.onclick = function() {
-                    const dataType = this.getAttribute('data-type');
-                    displayModal(dataType);
-                };
-            });
-
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) {
-                    closeModal();
-                }
+                    item.style.transform = 'scale(1)';
+                }, 100);
             });
         }
 
-
-        // --- FONCTIONS MODAL (Rappel des fonctionnalités de démonstration) ---
-        function displayModal(type) {
-            const modal = document.getElementById('modal-overlay');
-            const titleElement = document.getElementById('modal-title');
-            const contentElement = document.getElementById('modal-content');
-
-            let title = '';
-            let contentHTML = '';
-
-            // Contenu généré ici (pour garder le code lisible)
-             if (type === 'shop') {
-                title = "Boutique en Ligne (E-commerce)";
-                contentHTML = `
-                    <h4 style="color: #e74c3c;">🛍️ Section Produit : Les Sneakers Pro Max</h4>
-                    <p style="font-size: 0.9em; color: #555;">[Image Placeholder : Mannequin portant des sneakers]</p>
-                    <div style="background: white; padding: 15px; border: 2px solid var(--primary-color); border-radius: 8px; margin-top: 20px;">
-                        <strong class="text-bold">Nom du produit :</strong> Sneakers Pro Max <br>
-                        <strong style="font-size: 1.5em;">Prix :</strong> 99,99 € <br><br>
-                        <button style="background-color: var(--primary-color); color: white; padding: 10px 20px; border: none; cursor: pointer; transform: scale(1);">Ajouter au panier</button>
-                    </div>
-                `;
-            } else if (type === 'portfolio') {
-                title = "Portfolio Artistique / Photographe";
-                contentHTML = `
-                    <h4 style="color: var(--secondary-color);">🖼️ Galerie d'Images</h4>
-                    <div style="display: flex; gap: 10px;">
-                        <div class="feature-item" style="flex-grow: 1; min-height: 150px; background: #ccc; border-radius: 5px;"></div>
-                        <div class="feature-item" style="flex-grow: 1; min-height: 150px; background: #aaa; border-radius: 5px;"></div>
-                        <div class="feature-item" style="flex-grow: 1; min-height: 150px; background: #bbb; border-radius: 5px;"></div>
-                    </div>
-                     <p style="margin-top: 20px;">[Bouton CTA : Demander un devis / Voir la galerie complète]</p>
-                `;
-            } else if (type === 'local') {
-                title = "Site de Commerce Local (Café/Restaurant)";
-                contentHTML = `
-                    <h4 style="color: var(--secondary-color);">🍽️ Menu et Horaires</h4>
-                     <div style="background: #f9f9f9; padding: 15px; border-radius: 8px;">
-                        <strong class="text-bold">🕒 Horaires :</strong> Du Lundi au Dimanche, de 7h à 20h.<br>
-                        <strong class="text-bold">⭐ Menu spécialité du jour :</strong> Sandwich forestier <span style="color: var(--primary-color); font-weight: bold;">(Voir notre carte complète !)</span>
-                    </div>
-                    <button style="background-color: #e74c3c; color: white; padding: 10px 25px; border: none; margin-top: 20px; cursor: pointer;">Réserver une table</button>
-                `;
-            }
-
-            // Mise à jour du contenu et affichage de la modale
-            titleElement.textContent = title;
-            contentElement.innerHTML = contentHTML;
-            modal.style.display = 'flex'; 
-             setTimeout(() => {
-                 modal.classList.add('active');
-             }, 10); 
+        // 🔄 Animation de la progression
+        function animateProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = `${(Math.random() * 100) % 100}%`;
+            setTimeout(() => progressBar.style.width = '100%', 500);
         }
 
+        // 🚪 Fermeture de la modale
         function closeModal() {
-            const modal = document.getElementById('modal-overlay');
-            const box = document.getElementById('modal-box');
-            
-            // Désactiver les classes actives et masquer le fond sombre
-            modal.classList.remove('active');
-             setTimeout(() => {
-                modal.style.display = 'none'; 
-            }, 300); 
+            modalContent.style.display = 'none';
+            modalOverlay.classList.remove('active');
         }
 
+        // 🎨 Fonction de démonstration
+        function displayModal(type) {
+            const modal = modalOverlay;
+            const titleElement = document.getElementById('modal-title');
+            const contentElement = modalContent;
 
+            // Remplir le contenu selon le type
+            switch(type) {
+                case 'shop':
+                    contentElement.innerHTML = `
+                        <h4>${titleElement.textContent}</h4>
+                        <p>Un magasin en ligne avec produits variés.</p>
+                        <button style="background: var(--secondary-color); color: white; padding: 10px;">Ajouter au panier</button>
+                    `;
+                    break;
+                case 'portfolio':
+                    contentElement.innerHTML = `
+                        <h4>${titleElement.textContent}</h4>
+                        <p>Une galerie d'artistes avec des œuvres uniques.</p>
+                        <button style="background: var(--primary-color); color: white; padding: 10px;">Voir le portfolio</button>
+                    `;
+                    break;
+                case 'local':
+                    contentElement.innerHTML = `
+                        <h4>${titleElement.textContent}</h4>
+                        <p>Un café ou restaurant local avec une ambiance chaleureuse.</p>
+                        <button style="background: var(--secondary-color); color: white; padding: 10px;">Réserver une table</button>
+                    `;
+                    break;
+            }
+        }
+
+        // 🕹️ Événements interactifs
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') closeModal();
+        });
+
+        // 🔄 Boucle de chargement
+        animateProgress(); // Effet initial
+        setTimeout(() => {
+            animateBrick(); // Effet final
+        }, 2000);
     </script>
-
 </body>
 </html>
