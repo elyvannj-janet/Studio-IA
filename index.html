@@ -3,264 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Construction de Script HTML - 🚀 Version Finale</title>
+    <title>Création de Scripts HTML Sur Mesure - 🚀 Prêt à Démarrer !</title>
 
-    <!-- CSS Intégré -->
+    <!-- CSS Intégré pour le style et les animations (Le Cœur du Visuel) -->
     <style>
+        /* Variables de couleur */
         :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #2980b9;
+            --primary-color: #4CAF50; /* Vert : Succès, Action positive */
+            --secondary-color: #2980b9; /* Bleu Discord / Confiance : Couleur principale du site */
             --text-dark: #333;
             --background-light: #ecf0f1;
         }
 
+        /* GENERAL STYLING & TRANSITIONS (Animation de fond) */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            line-height: 1.6;
+            color: var(--text-dark);
             background-color: var(--background-light);
-            transition: all 0.5s ease;
         }
 
         /* ============================================== */
-        /* LOADER / ANIMATION */
+        /* HEADER : Style d'accroche */
         /* ============================================== */
-        .loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Ombre très visible */
         }
 
-        .loader-overlay.active {
-            opacity: 1;
-            pointer-events: none;
+        header h1 {
+            font-size: clamp(2em, 5vw, 3.5em);
+            margin-bottom: 10px;
         }
 
-        /* ============================================== */
-        /* CONTAINER DE CONTENT */
-        .showcase-container {
-            padding: 40px;
-            margin-top: 40px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        /* Mise en avant du "GRATUIT" (Le message clé) */
+        .free-highlight {
+            display: block;
+            font-size: clamp(1.8em, 5vw, 2.5em);
+            color: #e74c3c; /* Rouge intentionnel et ciblé */
+            font-weight: 900;
+            margin-top: 10px;
         }
 
         /* ============================================== */
-        /* HEADER : Accueil dynamique */
+        /* MODULES DE CONTENU GÉNÉRAUX */
         /* ============================================== */
         section {
             background-color: white;
-            padding: 40px;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Ombre douce */
+            margin-bottom: 40px;
+            /* Transition générale pour rendre le contenu interactif */
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
+        }
+
+        section:hover {
+             transform: translateY(-8px); /* Plus de soulèvement au survol */
+             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            text-align: center;
             margin-bottom: 30px;
+            font-size: clamp(1.8em, 4vw, 2.5em);
         }
 
         /* ============================================== */
-        /* FEATURES DÉMOZINANT */
+        /* SHOWCASE DES RÉALISATIONS (LE FOCUS VISUEL) */
+        /* ============================================== */
+        #showcases {
+            background-color: var(--background-light);
+            border-radius: 12px;
+        }
+
+        .showcase-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        /* Animation de survol ultra-visible */
+        .showcase-item {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            /* TRANSITION DE SURVOL SPECTACULAIRE */
+            transition: all 0.6s cubic-bezier(0.175, 0.88, 0.32, 1.275); /* L'effet de ressort */
+            width: calc(33% - 20px);
+        }
+
+        /* Effet RGB et survol au clic (Le point culminant visuel) */
+        .showcase-item:hover {
+             transform: scale(1.05) translateY(-10px);
+             box-shadow: 0 20px 40px rgba(76, 175, 80, 0.6), /* Ombre Verte */
+                         0 0 50px #2980b9; /* Aura Bleue (Effet RGB/magie) */
+        }
+
+        /* ============================================== */
+        /* CARTE DE FONCTIONNALITÉS */
         /* ============================================== */
         .feature-list {
             display: flex;
             gap: 25px;
             flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
         }
 
         .feature-item {
             background: white;
             padding: 20px;
             border-radius: 10px;
-            margin: 5px;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
 
         /* ============================================== */
-        /* ANIMATION DE SURREAL (SURS ENTRE LA BUTTE) */
+        /* CTA et Bouton Discord (Le point de conversion) */
         /* ============================================== */
-        .showcase-item {
-            background: var(--secondary-color);
-            color: white;
-            padding: 30px;
-            border-radius: 10px;
-            transition: transform 0.6s ease, box-shadow 0.6s ease;
-            cursor: pointer;
-        }
-
-        .showcase-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        /* ============================================== */
-        /* MODALE DE DÉCLARATION */
-        /* ============================================== */
-        #modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
-            transition: opacity 0.5s ease;
-        }
-
-        #modal-box {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-
-        #modal-title {
-            font-size: 2em;
-            color: var(--primary-color);
+        .cta-box {
+            background: linear-gradient(135deg, #e8f6fa 0%, #dcecf9 100%);
+            padding: 50px;
             text-align: center;
-            margin-bottom: 10px;
+            border: 4px solid var(--secondary-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* ============================================== */
-        /* CONTENUME PRINCIPAL */
-        /* ============================================== */
-        <section id="loader-content">
-            <h1 style="color: var(--primary-color);">🚀 Construction du Site Web</h1>
-            <p>Nous construisons votre site web étape par étape. Tout est transparent et interactif !</p>
+        /* Bouton Discord (Hyper-Visible) */
+        .discord-button {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px 45px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            transition: all 0.6s cubic-bezier(0.2, 1, 0.1, 1);
+            box-shadow: 0 8px 25px rgba(41, 128, 217, 0.5);
+        }
 
-            <!-- ANIMATION DE LA BUTTE -->
-            <div class="loader-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
+        /* Animation du bouton */
+        .discord-button:hover {
+            background-color: #1e67a8;
+            transform: scale(1.08) translateY(-5px);
+            box-shadow: 0 15px 35px rgba(41, 128, 217, 0.8);
+        }
 
-            <!-- CONTENU DÉMOZINANT -->
-            <div class="showcase-container">
-                <h2>🎯 Vos Besoins</h2>
-                <div class="feature-list">
-                    <div class="feature-item" onclick="displayModal('shop')">🛍️ Boutique de Chaussures</div>
-                    <div class="feature-item" onclick="displayModal('portfolio')">🖼️ Galerie d'Artiste</div>
-                    <div class="feature-item" onclick="displayModal('local')">☕ Café / Restaurant</div>
-                </div>
-
-                <!-- MODALE DE DÉCLARATION -->
-                <div id="modal" class="modal">
-                    <div class="modal-content">
-                        <h3>🎉 Votre Projet</h3>
-                        <p>Nous vous aidons à créer un site web parfait, sans frais. Découvrez comment !</p>
-                        <button id="closeBtn">Fermer</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SHOWCASE DES RÉALISATIONS -->
-        <section id="showcases">
-            <h2>🖼️ Vos Projets</h2>
-            <p style="text-align: center; font-size: 1.3em;">Découvrez nos réalisations.</p>
-
-            <div class="showcase-item" onclick="displayModal('shop')">
-                <h4>🛍️ Boutique de Chaussures</h4>
-                <p>Un magasin en ligne avec produits variés et un design moderne.</p>
-            </div>
-            <div class="showcase-item" onclick="displayModal('portfolio')">
-                <h4>🖼️ Galerie Artistique</h4>
-                <p>Une collection d'œuvres d'artistes locaux et internationaux.</p>
-            </div>
-            <div class="showcase-item" onclick="displayModal('local')">
-                <h4>☕ Café / Restaurant</h4>
-                <p>Un espace convivial avec une carte et des horaires précis.</p>
-            </div>
-        </section>
     </style>
+</head>
+<body>
 
-    <!-- JS (Animation + Modale) -->
-    <script>
-        // ============================================== */
-        // ============================================== */
-        // FONCTIONS DE L'ANIMATION ET DE LA MODALE
-        // ==============================================
+    <!-- ************************************** -->
+    <!-- CONTENU PRINCIPAL (AFFICHÉ IMMÉDIATEMENT) -->
+    <!-- ************************************** -->
+    <main id="site-content">
+        
+        <!-- SECTION 1 : Le Pitch (Ce que vous offrez) -->
+        <section id="services">
+            <h2 data-visible="false">💡 Qu'est-ce qu'un Script HTML Sur Mesure ?</h2>
+            <p style="text-align: center; font-size: 1.2em; max-width: 800px; margin: 0 auto 40px;">Un script sur mesure est votre vitrine digitale ! Nous créons une page web unique, parfaitement adaptée à vos besoins (portfolio, petite boutique virtuelle, présentation...).</p>
 
-        const modalOverlay = document.getElementById('modal-overlay');
-        const modalContent = document.getElementById('modal-content');
-        const closeBtn = document.querySelector('.close-btn');
+            <div class="feature-list">
+                <!-- Les onclick sont réutilisés pour le déclencheur visuel -->
+                <div class="feature-item" onclick="displayModal('shop'); event.stopPropagation();">
+                    <h3 title="">🎨 Design Unique</h3>
+                    <p>Des couleurs et une mise en page 100% adaptées à votre identité visuelle.</p>
+                </div>
+                <div class="feature-item" onclick="displayModal('shop'); event.stopPropagation();">
+                    <h3 title="">🛠️ Fonctionnalité Complète</h3>
+                    <p>Intégration de formulaires, galeries d'images ou fonctionnalités interactives simples.</p>
+                </div>
+                <div class="feature-item" onclick="displayModal('shop'); event.stopPropagation();">
+                    <h3 title="">🚀 Optimisation Mobile (Responsive)</h3>
+                    <p>Votre site sera parfait et utilisable sur téléphones, tablettes et ordinateurs.</p>
+                </div>
+            </div >
+        </section>
 
-        // 🎬 Animation de la brique (effet de survol)
-        function animateBrick() {
-            const items = document.querySelectorAll('.showcase-item');
-            items.forEach(item => {
-                item.style.transform = `scale(${item.style.transform});`);
-                setTimeout(() => {
-                    item.style.transform = 'scale(1)';
-                }, 100);
+         <!-- SHOWCASE DES RÉALISATIONS -->
+        <section id="showcases">
+            <h2 data-visible="false">🖼️ Quelques Exemples de Nos Réalisations</h2>
+            <p style="text-align: center; max-width: 900px; margin: -25px auto 40px;">Cliquez sur un exemple pour voir le mini-aperçu interactif !</p>
+
+            <div class="showcase-container">
+                <!-- Chaque élément est maintenant cliquable et animé -->
+                <div class="showcase-item" onclick="displayModal('shop'); event.stopPropagation();">
+                    <h4 style="color: white;">👟 Boutique de Chaussures</h4 >
+                    <p>Un magasin en ligne avec produits variés et un design moderne.</p>
+                </div>
+                <div class="showcase-item" onclick="displayModal('portfolio'); event.stopPropagation();">
+                    <h4 style="color: white;">📸 Galerie Artistique</h4 >
+                    <p>Une collection d'œuvres d'artistes locaux et internationaux.</p>
+                </div>
+                 <div class="showcase-item" onclick="displayModal('local'); event.stopPropagation();">
+                    <h4 style="color: white;">☕ Café / Restaurant</h4 >
+                    <p>Un espace convivial avec une carte et des horaires précis.</p>
+                </div>
+            </div >
+        </section>
+
+        <!-- SECTION 2 : L'Incitation (Pourquoi nous choisir) -->
+        <section id="gratuit">
+            <h2 data-visible="false" style="color: #e74c3c;">✅ Notre Promesse : ZÉRO Frais. 100% Garantie</h2>
+            <p style="text-align: center; font-size: 1.4em; color: #e74c3c; font-weight: bold;">Vous avez un projet ? Nous avons la solution... et elle ne coûte absolument rien.</p>
+             <p class="mt-5" style="max-width: 800px; margin: 20px auto; text-align: center;">Notre objectif est de vous offrir les outils numériques pour commencer votre aventure web, sans aucune barrière financière.</p>
+        </section>
+
+        <!-- SECTION 3 : L'Appel à l'Action (Le CTA) -->
+        <div class="cta-box">
+            <h3 data-visible="false" style="color: #27ae60;">🚀 Prêt à concrétiser votre projet ?</h3>
+            <p style="font-size: 1.2em; margin-bottom: 25px;">Pour commencer, rejoignez notre serveur Discord ! C'est là que nous discutons de vos idées et où nous vous fournirons le lien pour démarrer la création gratuite.</p>
+            
+            <!-- LIEN DISCORD MIS À JOUR -->
+            <a href="https://discord.gg/7R4PAtvUvg" class="discord-button" target="_blank">
+                ➡️ Rejoindre notre Communauté Discord ⬅️
+            </a>
+        </div>
+
+    </main>
+
+    <!-- ============================================ -->
+    <!-- MODAL WINDOW (Le pop-up de présentation) -->
+    <!-- ============================================ -->
+    <div id="modal-overlay" style="display:none;">
+        <div id="modal-box">
+            <button class="close-btn" onclick="closeModal()" style="float: right; background: none; border: none; font-size: 1.5em; cursor: pointer;">&times;</button>
+            <h3 id="modal-title">Aperçu de votre Script Web</h3>
+            <div class="simulated-preview" id="modal-content">
+                <!-- Le contenu généré par JavaScript apparaîtra ici -->
+            </div >
+        </div>
+    </div>
+
+    <!-- FOOTER : Infos de bas de page -->
+    <footer>
+        <p>&copy; Copyright Script Création Sur Mesure. Tous droits réservés | &copy; 2026</p>
+    </footer>
+
+<script>
+    // ===============================================
+    // --- FONCTIONS DE LA MODALE (Les interactions) ---
+    // ===============================================
+
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modalContent = document.getElementById('modal-content');
+    const closeBtn = document.querySelector('.close-btn');
+
+    // 🎨 Fonction de démonstration : Remplit le contenu au clic
+    function displayModal(type) {
+        const titleElement = document.getElementById('modal-title');
+        const contentElement = modalContent;
+
+        let title = '';
+        let contentHTML = '';
+
+        switch(type) {
+            case 'shop':
+                title = "Boutique en Ligne (E-commerce)";
+                contentHTML = `
+                    <h4 style="color: #e74c3c;">🛍️ Section Produit : Les Sneakers Pro Max</h4>
+                    <p style="font-size: 0.9em; color: #555;">[Image Placeholder : Mannequin portant des sneakers]</p>
+                    <div style="background: white; padding: 15px; border: 2px solid var(--primary-color); border-radius: 8px; margin-top: 20px;">
+                        <strong class="text-bold">Nom du produit :</strong> Sneakers Pro Max <br>
+                        <strong style="font-size: 1.5em;">Prix :</strong> 99,99 € <br><br>
+                        <button style="background-color: var(--primary-color); color: white; padding: 10px 20px; border: none; cursor: pointer;">Ajouter au panier</button>
+                    </div>
+                `;
+                break;
+            case 'portfolio':
+                title = "Portfolio Artistique / Photographe";
+                contentHTML = `
+                    <h4 style="color: var(--secondary-color);">🖼️ Galerie d'Images</h4>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="feature-item" style="flex-grow: 1; min-height: 150px; background: #ccc; border-radius: 5px;"></div>
+                        <div class="feature-item" style="flex-grow: 1; min-height: 150px; background: #aaa; border-radius: 5px;"></div>
+                        <div class="feature-item" style="flex-grow: 1; min-height: 150px; background: #bbb; border-radius: 5px;"></div>
+                    </div>
+                     <p style="margin-top: 20px;">[Bouton CTA : Demander un devis / Voir la galerie complète]</p>
+                `;
+                break;
+            case 'local':
+                title = "Site de Commerce Local (Café/Restaurant)";
+                contentHTML = `
+                    <h4 style="color: var(--secondary-color);">🍽️ Menu et Horaires</h4>
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 8px;">
+                        <strong class="text-bold">🕒 Horaires :</strong> Du Lundi au Dimanche, de 7h à 20h.<br>
+                        <strong class="text-bold">⭐ Menu spécialité du jour :</strong> Sandwich forestier <span style="color: var(--primary-color); font-weight: bold;">(Voir notre carte complète !)</span>
+                    </div>
+                    <button style="background-color: #e74c3c; color: white; padding: 10px 25px; border: none; margin-top: 20px; cursor: pointer;">Réserver une table</button>
+                `;
+            }
+
+            // Affichage de la modale avec les données mises à jour
+            titleElement.textContent = title;
+            contentElement.innerHTML = contentHTML;
+            modalOverlay.style.display = 'flex'; 
+        }
+
+        function closeModal() {
+             const modal = document.getElementById('modal-overlay');
+             // Utilisation de setTimeout pour laisser le temps à l'animation CSS de se déclencher
+             setTimeout(() => {
+                 modal.style.display = 'none'; 
+             }, 10); 
+        }
+
+        // --- SETUP FINAL : Écouteurs d'événements ---
+        function setupEventListeners() {
+            const showcaseItems = document.querySelectorAll('.showcase-item');
+            
+            // On assigne un événement de clic à chaque élément Showcase
+            showcaseItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const dataType = this.getAttribute('data-type');
+                    displayModal(dataType);
+                });
+            });
+
+            // Déclenche la modale si l'utilisateur clique sur le fond noir (amélioration UX)
+            document.getElementById('modal-overlay').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('modal-overlay')) {
+                    closeModal();
+                }
             });
         }
 
-        // 🔄 Animation de la progression
-        function animateProgress() {
-            const progressBar = document.getElementById('progress-bar');
-            progressBar.style.width = `${(Math.random() * 100) % 100}%`;
-            setTimeout(() => progressBar.style.width = '100%', 500);
-        }
-
-        // 🚪 Fermeture de la modale
-        function closeModal() {
-            modalContent.style.display = 'none';
-            modalOverlay.classList.remove('active');
-        }
-
-        // 🎨 Fonction de démonstration
-        function displayModal(type) {
-            const modal = modalOverlay;
-            const titleElement = document.getElementById('modal-title');
-            const contentElement = modalContent;
-
-            // Remplir le contenu selon le type
-            switch(type) {
-                case 'shop':
-                    contentElement.innerHTML = `
-                        <h4>${titleElement.textContent}</h4>
-                        <p>Un magasin en ligne avec produits variés.</p>
-                        <button style="background: var(--secondary-color); color: white; padding: 10px;">Ajouter au panier</button>
-                    `;
-                    break;
-                case 'portfolio':
-                    contentElement.innerHTML = `
-                        <h4>${titleElement.textContent}</h4>
-                        <p>Une galerie d'artistes avec des œuvres uniques.</p>
-                        <button style="background: var(--primary-color); color: white; padding: 10px;">Voir le portfolio</button>
-                    `;
-                    break;
-                case 'local':
-                    contentElement.innerHTML = `
-                        <h4>${titleElement.textContent}</h4>
-                        <p>Un café ou restaurant local avec une ambiance chaleureuse.</p>
-                        <button style="background: var(--secondary-color); color: white; padding: 10px;">Réserver une table</button>
-                    `;
-                    break;
-            }
-        }
-
-        // 🕹️ Événements interactifs
-        document.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON') closeModal();
-        });
-
-        // 🔄 Boucle de chargement
-        animateProgress(); // Effet initial
-        setTimeout(() => {
-            animateBrick(); // Effet final
-        }, 2000);
     </script>
 </body>
 </html>
