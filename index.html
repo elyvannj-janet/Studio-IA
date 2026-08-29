@@ -3,647 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio IA - Scroll Enable</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Création de Scripts HTML Sur Mesure - 💰 100% GRATUIT !</title>
 
+    <!-- CSS Intégré pour le style et les animations -->
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+        /* Variables de couleur */
         :root {
-            --bg: #05070f;
-            --surface: #0e1525;
-            --border: #162040;
-            --text: #e8e4ff;
-            --muted: #5a6484;
-            --accent: #6366f1;
-            --accent-2: #a78bfa;
-            --error: #f87171;
-            --success: #34d399;
+            --primary-color: #4CAF50; /* Vert vif, succès */
+            --secondary-color: #2980b9; /* Bleu Discord / Confiance */
+            --text-dark: #333;
+            --background-light: #ecf0f1;
         }
 
-        /* CORRECTION : Configuration globale du scroll sur PC */
-        html {
-            scroll-behavior: smooth;
-        }
-
+        /* GLOBAL STYLING ET TRANSITIONS (La base des animations) */
         body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            /* Active le scroll vertical dès que nécessaire */
-            overflow-y: auto; 
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: #ffffff;
         }
 
-        /* Personnalisation de la barre de défilement (Scrollbar) pour rester dans le thème futuriste */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent);
-        }
-
-        /* ─── Header ─── */
+        /* Header : Style d'accroche */
         header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 24px 14px;
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
-            background: var(--bg);
-            position: relative;
-            z-index: 10;
-        }
-
-        .logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 800;
-            font-size: 1.15rem;
-            letter-spacing: -0.5px;
-            background: linear-gradient(105deg, #818cf8 0%, #a78bfa 60%, #c4b5fd 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .logo span { font-weight: 400; opacity: 0.5; }
-
-        .visits {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--muted);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            letter-spacing: 0.3px;
-        }
-
-        .visits::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 8px var(--success);
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        /* ─── Canvas Zone ─── */
-        .canvas-zone {
-            flex: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg);
+            background-color: var(--secondary-color);
+            color: white;
             padding: 40px 20px;
-            min-height: 450px; /* Assure une belle taille sur PC */
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
         }
 
-        canvas#robot {
-            max-width: 100%;
-            max-height: 70vh; /* Empêche le canvas de saturer tout l'écran vertical */
-            width: auto;
-            height: auto;
-            object-fit: contain;
+        header h1 {
+            font-size: clamp(2em, 5vw, 3.5em); /* Taille dynamique en fonction de l'écran */
+            margin-bottom: 10px;
+        }
+
+        /* Mise en avant du "GRATUIT" (Le message clé) */
+        .free-highlight {
             display: block;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            font-size: clamp(1.8em, 5vw, 2.5em);
+            color: #e74c3c; /* Rouge pour l'alerte */
+            font-weight: 900;
+            margin-top: 10px;
         }
 
-        /* Scan-line reveal overlay */
-        .scanline-reveal {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 4;
-            overflow: hidden;
-            opacity: 0;
-        }
-
-        .scanline-reveal.active {
-            opacity: 1;
-            animation: scan-complete 1.2s ease-in-out forwards;
-        }
-
-        .scanline-reveal::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
-            top: -3px;
-            animation: scan-line 1.2s ease-in-out forwards;
-            box-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent-2);
-        }
-
-        @keyframes scan-line {
-            0% { top: -3px; }
-            100% { top: 100%; }
-        }
-
-        @keyframes scan-complete {
-            0%, 85% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        /* Empty state */
-        .empty-state {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-
-        .empty-state.hidden { opacity: 0; }
-
-        .empty-grid {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(var(--border) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 48px 48px;
-            opacity: 0.3;
-        }
-
-        .empty-icon {
-            font-size: 2.4rem;
-            opacity: 0.25;
-            position: relative;
-            z-index: 1;
-        }
-
-        .empty-label {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ─── Progress Bar ─── */
-        .progress-rail {
-            height: 2px;
-            background: var(--border);
-            flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        #bar {
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 0%;
-            background: linear-gradient(90deg, var(--accent), var(--accent-2));
-            transition: width 0.18s ease-out;
-            box-shadow: 0 0 12px var(--accent);
-        }
-
-        /* ─── Dock ─── */
-        .dock {
-            flex-shrink: 0;
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            padding: 24px 20px 30px;
-            position: relative;
-            z-index: 5;
-        }
-
-        /* Status line */
-        .status-line {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        #status {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--accent-2);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        #status.error { color: var(--error); }
-        #status.success { color: var(--success); }
-
-        .seed-label {
-            font-size: 0.65rem;
-            color: var(--muted);
-            font-family: 'Space Grotesk', monospace;
-            letter-spacing: 0.5px;
-        }
-
-        /* Input row */
-        .input-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
+        /* Conteneur principal */
+        .container {
+            width: 85%;
             max-width: 1200px;
-            margin: 0 auto; /* Centre la barre sur les grands écrans */
+            margin: 40px auto;
+            padding: 20px;
         }
 
-        .tool-btn {
-            flex-shrink: 0;
-            width: 48px;
-            height: 48px;
+        section {
+            background-color: white;
+            padding: 35px;
             border-radius: 12px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--muted);
-            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Ombre plus douce et large */
+            margin-bottom: 40px;
+            transition: transform 0.3s ease; /* Animation sur la section elle-même */
+        }
+
+        section:hover {
+             transform: translateY(-5px); /* Léger soulèvement au survol de section */
+             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+
+        h2 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: clamp(1.8em, 4vw, 2.5em);
+        }
+
+        /* ============================================== */
+        /* SECTION DES CARTE DE FONCTIONNALITÉS (Animations améliorées) */
+        /* ============================================== */
+        .feature-list {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 25px; /* Espace un peu plus grand */
             justify-content: center;
-            font-size: 1rem;
-            transition: all 0.2s;
         }
 
-        .tool-btn:hover {
-            border-color: var(--accent);
-            color: var(--text);
-            background: rgba(99, 102, 241, 0.08);
-        }
-        
-        .tool-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            border-color: var(--border);
-        }
-
-        .input-wrap {
-            flex: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            background: var(--bg);
-            transition: border-color 0.2s;
-        }
-
-        .input-wrap:focus-within {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        input#cmd {
-            flex: 1;
-            padding: 14px 18px;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-        }
-
-        input#cmd::placeholder { color: var(--muted); }
-
-        .magic-btn {
-            background: transparent;
-            border: none;
-            color: var(--accent-2);
-            font-size: 1.1rem;
+        .feature-item {
+            background: var(--background-light);
+            padding: 25px;
+            border-radius: 10px;
+            flex: 1 1 300px; /* Flex plus souple */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
             cursor: pointer;
-            padding-right: 14px;
-            transition: transform 0.2s;
-            display: flex;
-            align-items: center;
-        }
-        
-        .magic-btn:hover { transform: scale(1.1); }
-
-        .send-btn {
-            flex-shrink: 0;
-            height: 48px;
-            padding: 0 26px;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            color: #fff;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 700;
-            cursor: pointer;
-            letter-spacing: 0.3px;
-            transition: opacity 0.2s, transform 0.15s;
+            /* Animation clé ici ! */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transition douce et agréable */
         }
 
-        .send-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+        .feature-item:hover {
+            transform: scale(1.05) translateY(-8px); /* Agrandissement et soulèvement au survol */
+            box-shadow: 0 15px 30px rgba(41, 128, 217, 0.2); /* Ombre bleue pour l'effet "actif" */
         }
 
-        .send-btn:disabled {
-            opacity: 0.4;
-            cursor: default;
-            transform: none;
+        /* ============================================== */
+        /* CALL TO ACTION (Le bouton Discord) */
+        /* ============================================== */
+        .cta-box {
+            background: linear-gradient(135deg, #e8f6fa 0%, #dcecf9 100%); /* Dégradé plus riche */
+            padding: 50px;
+            text-align: center;
+            border: 4px solid var(--secondary-color); /* Bordure plus solide */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        input[type="file"] { display: none; }
-
-        /* Spinner */
-        .spinner-wrap {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 18px;
-            pointer-events: none;
-            opacity: 0;
-            z-index: 3;
-            transition: opacity 0.3s;
+        .cta-box h3 {
+            font-size: clamp(1.8em, 4vw, 2.5em);
+            color: #27ae60;
         }
 
-        .spinner-wrap.active { opacity: 1; }
-
-        .spinner-ring {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 3px solid rgba(99, 102, 241, 0.15);
-            border-top-color: var(--accent);
-            border-right-color: var(--accent-2);
-            animation: spin 0.8s linear infinite;
+        /* Bouton Discord (Animation la plus visible) */
+        .discord-button {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 18px 40px; /* Plus grand et impactant */
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            /* Transitions pour un effet de survol parfait */
+            transition: all 0.3s cubic-bezier(0.2, 1, 0.1, 1);
+            box-shadow: 0 6px 15px rgba(41, 128, 217, 0.4); /* Ombre initiale */
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .spinner-text {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, #ff4b4b, #ffb04b, #4bff4b, #4b9fff, #b04bff, #ff4b4b);
-            background-size: 400% 100%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rgb-shift 6s linear infinite, pulse-opacity 1.5s ease-in-out infinite;
+        .discord-button:hover {
+            background-color: #1e67a8;
+            transform: scale(1.05) translateY(-3px); /* Effet de grandissement et soulèvement */
+            box-shadow: 0 12px 25px rgba(41, 128, 217, 0.6); /* Ombre plus forte au survol */
         }
 
-        @keyframes rgb-shift {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 400% 0%; }
+        /* Footer */
+        footer {
+            background-color: #2c3e50; /* Couleur de fond sombre et professionnelle */
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 30px;
+            font-size: 1em;
         }
 
-        @keyframes pulse-opacity {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+        /* Responsive Design (Assure que les animations fonctionnent bien sur mobile) */
+        @media (max-width: 768px) {
+             .feature-item {
+                flex: 1 1 45%; /* Deux cartes par ligne sur tablette/mobile */
+            }
         }
 
-        @media (max-width: 580px) {
-            header { padding: 14px 16px 12px; }
-            .dock { padding: 14px 14px 18px; }
-            .tool-btn { width: 40px; height: 40px; }
-            .send-btn { height: 40px; padding: 0 14px; }
-            .canvas-zone { padding: 10px; min-height: 300px; }
-        }
     </style>
 </head>
 <body>
 
+    <!-- HEADER : Zone d'accroche maximale -->
     <header>
-        <div class="logo">Studio <span>/</span> IA</div>
-        <div class="visits">En ligne · <span id="visitCount">—</span> visites</div>
+        <h1>🌐 Script HTML Sur Mesure</h1>
+        <span class="free-highlight">C'est 💯% GRATUIT ! 💰</span>
+        <p style="margin-top: 10px;">Développez votre projet web de rêve sans dépenser un centime.</p>
     </header>
 
-    <div class="canvas-zone">
-        <canvas id="robot" width="800" height="600"></canvas>
+    <!-- CONTENEUR PRINCIPAL -->
+    <div class="container">
 
-        <div class="empty-state" id="emptyState">
-            <div class="empty-grid"></div>
-            <div class="empty-icon">✦</div>
-            <div class="empty-label">Décrivez une image</div>
-        </div>
+        <!-- SECTION 1 : Le Pitch (Ce que vous offrez) -->
+        <section id="services">
+            <h2>💡 Qu'est-ce qu'un Script HTML Sur Mesure ?</h2>
+            <p style="text-align: center; font-size: 1.2em; max-width: 800px; margin: 0 auto 40px;">Un script sur mesure est votre vitrine digitale ! Nous créons une page web unique, parfaitement adaptée à vos besoins (portfolio, petite boutique virtuelle, présentation...).</p>
 
-        <div class="spinner-wrap" id="spinnerWrap">
-            <div class="spinner-ring"></div>
-            <div class="spinner-text">Calcul IA en cours…</div>
-        </div>
+            <div class="feature-list">
+                <!-- Les cartes ont maintenant un effet de survol très visible -->
+                <div class="feature-item">
+                    <h3>🎨 Design Unique</h3>
+                    <p>Des couleurs et une mise en page 100% adaptées à votre identité visuelle.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🛠️ Fonctionnalité Complète</h3>
+                    <p>Intégration de formulaires, galeries d'images ou fonctionnalités interactives simples.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🚀 Optimisation Mobile (Responsive)</h3>
+                    <p>Votre site sera parfait et utilisable sur téléphones, tablettes et ordinateurs.</p>
+                </div>
+            </div >
+        </section>
 
-        <div class="scanline-reveal" id="scanReveal"></div>
-    </div>
+        <!-- SECTION 2 : L'Incitation (Pourquoi nous choisir) -->
+        <section id="gratuit">
+            <h2>✅ Notre Promesse : ZÉRO Frais. 100% Garantie</h2>
+            <p style="text-align: center; font-size: 1.4em; color: #e74c3c; font-weight: bold;">Vous avez un projet ? Nous avons la solution... et elle ne coûte absolument rien.</p>
+             <p class="mt-5" style="max-width: 800px; margin: 20px auto; text-align: center;">Notre objectif est de vous offrir les outils numériques pour commencer votre aventure web, sans aucune barrière financière.</p>
+        </section>
 
-    <div class="progress-rail"><div id="bar"></div></div>
-
-    <div class="dock">
-        <div class="status-line">
-            <div id="status">Prêt</div>
-            <div class="seed-label" id="seedLabel">seed —</div>
-        </div>
-        <div class="input-row">
-            <input type="file" id="fileInput" accept="image/*">
+        <!-- SECTION 3 : L'Appel à l'Action (Le CTA) -->
+        <div class="cta-box">
+            <h3>🚀 Prêt à concrétiser votre projet ?</h3>
+            <p style="font-size: 1.2em; margin-bottom: 25px;">Pour commencer, rejoignez notre serveur Discord ! C'est là que nous discutons de vos idées et où nous vous fournirons le lien pour démarrer la création gratuite.</p>
             
-            <button class="tool-btn" title="Importer une image" onclick="document.getElementById('fileInput').click()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-                    <polyline points="21 15 16 10 5 21"/>
-                </svg>
-            </button>
-
-            <button class="tool-btn" id="downloadBtn" title="Télécharger l'image" disabled>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4M7 10l5 5 5-5M12 15V3"/>
-                </svg>
-            </button>
-
-            <button class="tool-btn" id="randomBtn" title="Idée de prompt aléatoire">🎲</button>
-
-            <div class="input-wrap">
-                <input id="cmd" placeholder="Un loup mécanique futuriste sous une pluie de néon…" autocomplete="off" spellcheck="false">
-                <button class="magic-btn" id="magicBtn" title="Améliorer le prompt (Style Pro)">✨</button>
-            </div>
-            <button class="send-btn" id="send">Générer</button>
+            <!-- LIEN DISCORD MIS À JOUR -->
+            <a href="https://discord.gg/7R4PAtvUvg" class="discord-button" target="_blank">
+                ➡️ Rejoindre notre Communauté Discord ⬅️
+            </a>
         </div>
+
     </div>
 
-<script>
-    const robotCanvas = document.getElementById("robot");
-    const rctx = robotCanvas.getContext("2d");
-    const bar = document.getElementById("bar");
-    const statusDiv = document.getElementById("status");
-    const seedLabel = document.getElementById("seedLabel");
-    const spinnerWrap = document.getElementById("spinnerWrap");
-    const scanReveal = document.getElementById("scanReveal");
-    const emptyState = document.getElementById("emptyState");
-    const sendBtn = document.getElementById("send");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const randomBtn = document.getElementById("randomBtn");
-    const magicBtn = document.getElementById("magicBtn");
-    const inputField = document.getElementById("cmd");
+    <!-- FOOTER : Infos de bas de page (Année mise à jour) -->
+    <footer>
+        <p>&copy; Copyright Script Création Sur Mesure. Tous droits réservés | &copy; 2026</p>
+    </footer>
 
-    let isLoading = false;
-    let cloudInterval = null;
-    let cloudProgress = 0;
-    let currentSeed = null;
-
-    const BANNED = ["nsfw", "+18", "18+", "porn", "sexy", "nude", "nu ", "naked", "gore", "blood", "sang", "kill", "mort", "weapon", "arme"];
-
-    const RANDOM_PROMPTS = [
-        "A cyberpunk cat sitting on neon ledge, cinematic cyberpunk cityscape, 8k resolution",
-        "A mystical floating island with waterfalls above purple clouds, fantasy concept art",
-        "A futuristic astronaut discovering an ancient glowing alien artifact, dark ambient lighting",
-        "A mechanical cybernetic owl with glowing blue laser eyes, photorealistic, intricate gears",
-        "A lost synthwave city under a giant holographic grid sunset, retro retro-futurism style"
-    ];
-
-    async function updateCounter() {
-        let n = parseInt(localStorage.getItem("fb_counter")) || Math.floor(1420 + Math.random() * 100);
-        n += Math.floor(Math.random() * 3) + 1;
-        localStorage.setItem("fb_counter", n);
-        document.getElementById("visitCount").textContent = n.toLocaleString("fr-FR");
-        
-        try {
-            const r = await fetch("https://api.scrimba.com/counters/studio-ia-elyvann-unique", { method: "POST" });
-            if (r.ok) {
-                const d = await r.json();
-                if(d.count || d.value) document.getElementById("visitCount").textContent = (d.count || d.value).toLocaleString("fr-FR");
-            }
-        } catch(e) {}
-    }
-    updateCounter();
-
-    function setStatus(text, type = "") {
-        statusDiv.textContent = text;
-        statusDiv.className = type;
-    }
-
-    function checkSafety(text) {
-        const l = text.toLowerCase();
-        return BANNED.some(w => l.includes(w));
-    }
-
-    function startBar() {
-        cloudProgress = 0;
-        bar.style.width = "0%";
-        clearInterval(cloudInterval);
-        cloudInterval = setInterval(() => {
-            cloudProgress = cloudProgress < 88 ? cloudProgress + Math.random() * 6 : cloudProgress < 97 ? cloudProgress + 0.4 : cloudProgress;
-            bar.style.width = Math.min(97, cloudProgress) + "%";
-        }, 160);
-    }
-
-    function completeBar() {
-        clearInterval(cloudInterval);
-        bar.style.width = "100%";
-        setTimeout(() => { bar.style.width = "0%"; }, 800);
-    }
-
-    function triggerScanReveal() {
-        scanReveal.classList.remove("active");
-        void scanReveal.offsetWidth; 
-        scanReveal.classList.add("active");
-        setTimeout(() => scanReveal.classList.remove("active"), 1300);
-    }
-
-    function generate() {
-        const prompt = inputField.value.trim();
-        if (!prompt || isLoading) return;
-
-        if (checkSafety(prompt)) {
-            setStatus("Contenu non autorisé", "error");
-            return;
-        }
-
-        isLoading = true;
-        sendBtn.disabled = true;
-        downloadBtn.disabled = true;
-        emptyState.classList.add("hidden");
-        spinnerWrap.classList.add("active");
-        setStatus("Génération en cours…");
-        startBar();
-
-        const seed = Math.floor(Math.random() * 9999999);
-        currentSeed = seed;
-        seedLabel.textContent = `seed ${seed}`;
-
-        let clean = prompt
-            .replace(/[éèêë]/g, "e").replace(/[àâ]/g, "a")
-            .replace(/[ùû]/g, "u").replace(/ç/g, "c");
-
-        const img = new Image();
-        img.removeAttribute("crossOrigin"); 
-        img.crossOrigin = "anonymous";
-        
-        img.onload = () => {
-            spinnerWrap.classList.remove("active");
-            completeBar();
-            isLoading = false;
-            sendBtn.disabled = false;
-            downloadBtn.disabled = false;
-
-            rctx.clearRect(0, 0, robotCanvas.width, robotCanvas.height);
-            rctx.drawImage(img, 0, 0, robotCanvas.width, robotCanvas.height);
-
-            triggerScanReveal();
-            setStatus("Image générée", "success");
-            inputField.value = "";
-        };
-
-        img.onerror = () => {
-            spinnerWrap.classList.remove("active");
-            clearInterval(cloudInterval);
-            bar.style.width = "0%";
-            isLoading = false;
-            sendBtn.disabled = false;
-            setStatus("Erreur réseau ou sécurité locale — réessayez", "error");
-        };
-
-        img.src = `https://image.pollinations.ai/p/${encodeURIComponent(clean)}?width=800&height=600&seed=${seed}&nologo=true`;
-    }
-
-    magicBtn.addEventListener("click", () => {
-        const currentText = inputField.value.trim();
-        if(currentText !== "") {
-            inputField.value = `${currentText}, photorealistic, highly detailed, 8k resolution, cinematic lighting, masterpiece, volumetric smoke, ray tracing`;
-            setStatus("Prompt amélioré ✨", "success");
-        } else {
-            setStatus("Écrivez d'abord un prompt à améliorer !");
-        }
-    });
-
-    randomBtn.addEventListener("click", () => {
-        const randomIndex = Math.floor(Math.random() * RANDOM_PROMPTS.length);
-        inputField.value = RANDOM_PROMPTS[randomIndex];
-        setStatus("Idée chargée 🎲");
-    });
-
-    downloadBtn.addEventListener("click", () => {
-        try {
-            const link = document.createElement("a");
-            link.download = `studio-ia-${currentSeed || 'export'}.png`;
-            link.href = robotCanvas.toDataURL("image/png");
-            link.click();
-            setStatus("Image téléchargée 💾", "success");
-        } catch(e) {
-            setStatus("Téléchargement non supporté en local.", "error
+</body>
+</html>
