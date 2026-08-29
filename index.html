@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Script HTML Sur Mesure - ⚡ Débuter Votre Projet GRATUITEMENT</title>
+    <title>Script HTML Sur Mesure - ⚡ La Puissance Web à Portée de Clic</title>
 
     <!-- CSS Intégré pour le style et les animations (LE CŒUR VISUEL) -->
     <style>
@@ -15,7 +15,9 @@
             --background-light: #ecf0f1;
         }
 
-        /* GENERAL STYLING & TRANSITIONS (Animation de fond) */
+        /* ============================================== */
+        /* GENERAL STYLING & TRANSITIONS (L'animation partout) */
+        /* ============================================== */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -33,7 +35,7 @@
             color: white;
             padding: 40px 20px;
             text-align: center;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Ombre très visible */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         }
 
         header h1 {
@@ -41,7 +43,7 @@
             margin-bottom: 10px;
         }
 
-        /* Mise en avant du "GRATUIT" (Le message clé) */
+        /* Mise en avant du "GRATUIT" */
         .free-highlight {
             display: block;
             font-size: clamp(1.8em, 5vw, 2.5em);
@@ -59,33 +61,83 @@
             border-radius: 12px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
             margin-bottom: 40px;
-            /* Transition générale pour l'effet de fond général */
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
         }
 
-        section:hover {
-             transform: translateY(-8px); /* Soulèvement doux */
-             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        /* --- L'EFFET ÉLECTRIQUE (NE S'APPLIQUE QUE SUR LES CARTES) ---*/
-        .feature-item {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 5px;
+        /* ============================================== */
+        /* ANIMATION DU BOUTON GÉNÉRAL */
+        /* ============================================== */
+        .button-item {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 8px;
+            background-color: #e0f7fa;
+            color: var(--secondary-color);
+            cursor: pointer;
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent; /* Base pour l'effet */
         }
 
-        /* Le HOVER ÉLECTRIQUE MAGIQUE */
-        .feature-item:hover {
-            transform: scale(1.05) translateY(-10px); 
-            box-shadow: 0 20px 40px rgba(76, 175, 80, 0.6), /* Aura verte */
-                        inset 0 0 10px #3498db; /* Contraste bleu électrique interne */
-            border: 2px solid var(--secondary-color); /* Bordure visible au survol */
+        /* L'EFFET ÉLECTRIQUE GÉNÉRAL au survol */
+        .button-item:hover {
+            transform: scale(1.08) translateY(-5px); /* Le soulèvement et le grandissement */
+            /* Aura verte et bleue électrique */
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4), 
+                        inset 0 0 15px #2980b9; /* Glow interne bleu */
+            border-color: var(--primary-color);
         }
 
+        /* ============================================== */
+        /* SECTION DES BOUTONS (Les menus et groupes) */
+        /* ============================================== */
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* ============================================== */
+        /* LE GROUPE DE NAVIGATION PRINCIPAL (Mega Menu) */
+        /* ============================================== */
+        .main-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .dropdown {
+            position: relative;
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-weight: bold;
+            cursor: pointer;
+            padding: 10px 5px;
+            display: inline-block;
+            /* Animation de l'icône qui apparaît */
+            transition: transform 0.3s ease; 
+        }
+
+        .dropdown-content {
+            display: none; /* Caché par défaut */
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 250px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 10;
+        }
+
+        /* Affichage du menu au survol */
+        .dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeInDrop 0.3s ease forwards; /* Animation d'apparition */
+        }
+        
+        @keyframes fadeInDrop {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         /* ============================================== */
         /* CTA ET BOUTON DISCORD (LE POINT DE CONVERSION) */
@@ -98,7 +150,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* L'Effet de déformation RGB : Le secret est dans les transitions et shadows */
+        /* L'Effet de déformation RGB : (Maintient l'animation la plus complexe) */
         .discord-button {
             display: inline-block;
             background-color: var(--secondary-color);
@@ -108,22 +160,19 @@
             border-radius: 50px;
             font-size: 1.3em;
             font-weight: bold;
-            /* TRÈS LENT ET FLUIDE */
+            /* TRANSITION DE SURVOL SPECTACULAIRE */
             transition: all 0.8s cubic-bezier(0.2, 1, 0.1, 1); 
             box-shadow: 0 6px 15px rgba(41, 128, 217, 0.5);
         }
 
-        /* Le Hover RGB Déformant */
+        /* L'Hover RGB Déformant */
         .discord-button:hover {
-            transform: scale(1.1) translateY(-8px) skewX(-3deg); /* Scale + Y offset + Skew pour la déformation */
-            background-color: #1e67a8;
-            /* Création de l'effet électrique/RGB avec un grand rayon et des couleurs multiples */
+            transform: scale(1.1) translateY(-8px) skewX(-3deg); 
             box-shadow: 0 20px 50px rgba(76, 175, 80, 0.6), /* Aura verte (glow) */
                          0 0 80px #2980b9,   /* Grande aura bleue */
                          0 0 30px red;       /* Point rouge ciblé pour l'électricité */
             filter: brightness(1.2); /* Augmente la luminosité globale au survol */
         }
-
 
     </style>
 </head>
@@ -145,31 +194,66 @@
             <p style="text-align: center; font-size: 1.2em; max-width: 800px; margin: 0 auto 40px;">Un script sur mesure est votre vitrine digitale ! Nous créons une page web unique, parfaitement adaptée à vos besoins.</p>
 
             <div class="feature-list">
-                <!-- On ajoute un onclick pour que les éléments aient l'effet de démonstration -->
-                <div class="feature-item" onclick="displayModal('shop'); event.stopPropagation();">
+                <!-- Les éléments qui doivent garder l'effet électrique -->
+                <div class="feature-item" onclick="alert('Fonctionnalité déclenchée : Design UI/UX'); event.stopPropagation();">
                     <h3>🎨 Design Unique</h3>
                     <p>Des couleurs et une mise en page 100% adaptées à votre identité visuelle.</p>
                 </div>
-                <div class="feature-item" onclick="displayModal('shop'); event.stopPropagation();">
+                <div class="feature-item" onclick="alert('Fonctionnalité déclenchée : Fonctionnalités avancées'); event.stopPropagation();">
                     <h3>🛠️ Fonctionnalité Complète</h3>
                     <p>Intégration de formulaires, galeries d'images ou fonctionnalités interactives simples.</p>
                 </div>
-            </div >
+            </div>
         </section>
 
-        <!-- SECTION 2 : L'Incitation (Pourquoi nous choisir) -->
-        <section id="gratuit">
-            <h2 data-visible="false" style="color: #e74c3c;">✅ Notre Promesse : ZÉRO Frais. 100% Garantie</h2>
-            <p style="text-align: center; font-size: 1.4em; color: #e74c3c; font-weight: bold;">Vous avez un projet ? Nous avons la solution... et elle ne coûte absolument rien.</p>
-             <p class="mt-5" style="max-width: 800px; margin: 20px auto; text-align: center;">Notre objectif est de vous offrir les outils numériques pour commencer votre aventure web, sans aucune barrière financière.</p>
+        <!-- SECTION 2 : Les Domaines d'Expertise (Nouveau Mega Menu) -->
+        <section id="expertise">
+            <h2 data-visible="false">🛠️ Nous Maîtrisons Tous les Secteurs Web</h2>
+            <p style="text-align: center; margin-bottom: 40px;">Quel que soit votre besoin, nous avons la solution technique et visuelle. Explorez nos domaines d'expertise.</p>
+
+            <!-- NAVIGATION PRINCIPALE AVEC MENUS -->
+            <div class="main-nav">
+                <!-- Le menu principal doit être cliquable et déclencher le glow global au survol -->
+                <a href="#" class="dropdown" role="button">Marketing & SEO</a>
+                
+                <!-- Menu de démonstration pour la complexité visuelle -->
+                <div class="dropdown" role="menuitem">
+                    <a href="#">⚙️ Technique</a>
+                    <div class="dropdown-content">
+                        <a href="#" style="color: var(--secondary-color); text-decoration: none; display: block;">SEO Optimisation</a>
+                        <a href="#" style="color: var(--secondary-color); text-decoration: none; display: block;">Intégration API (WhatsApp, Stripe)</a>
+                        <a href="#" style="color: var(--secondary-color); text-decoration: none; display: block;">Bases de données légères</a>
+                    </div>
+                </div>
+
+                <div class="dropdown" role="menuitem">
+                    <a href="#">🌍 International</a>
+                    <div class="dropdown-content">
+                        <a href="#" style="color: var(--secondary-color); text-decoration: none; display: block;">Multi-langue (i18n)</a>
+                        <a href="#" style="color: var(--secondary-color); text-decoration: none; display: block;">Localisation des contenus</a>
+                        <a href="#" style="color: var(--secondary-color); text-decoration: none; display: block;">Adaptation Culturelle</a>
+                    </div>
+                </div>
+
+                <div class="dropdown" role="menuitem">
+                    <a href="#">🖥️ Fonctionnalités Avancées</a>
+                    <div class="dropdown-content">
+                        <a href="#" style="color: var(--secondary-color); text-decoration: none; display: block;">Système de réservation</a>
+                        <a href="#" style="color: var(--secondary-color); text-decoration: none; display: block;">Calculateur personnalisé (CTA)</a>
+                        <a href="#" style="color: var(--secondary-color); text-decoration: none; display: block;">Espace membre sécurisé</a>
+                    </div>
+                </div>
+            </div>
+
         </section>
+
 
         <!-- SECTION 3 : L'Appel à l'Action (Le CTA) -->
         <div class="cta-box">
-            <h3 data-visible="false" style="color: #27ae60;">🚀 Prêt à concrétiser votre projet ?</h3>
+            <h3 data-visible="false" style="color: #27ae60;">🚀 Le seul point de départ : Discord</h3>
             <p style="font-size: 1.2em; margin-bottom: 25px;">Pour commencer, rejoignez notre serveur Discord ! C'est là que nous discutons de vos idées et où nous vous fournirons le lien pour démarrer la création gratuite.</p>
             
-            <!-- LIEN DISCORD MIS À JOUR -->
+            <!-- LE BOUTON ULTIME -->
             <a href="https://discord.gg/7R4PAtvUvg" class="discord-button" target="_blank">
                 ➡️ Rejoindre notre Communauté Discord ⬅️
             </a>
@@ -178,7 +262,7 @@
     </div >
 
     <!-- ============================================ -->
-    <!-- MODAL WINDOW (Le pop-up de présentation) -->
+    <!-- MODAL WINDOW (Pop-up) - Pour le fun, on garde l'interface de clic. -->
     <!-- ============================================ -->
     <div id="modal-overlay" style="display:none;">
         <div id="modal-box">
@@ -195,10 +279,9 @@
         <p>&copy; Copyright Script Création Sur Mesure. Tous droits réservés | &copy; 2026</p>
     </footer>
 
-
 <script>
     // ===============================================
-    // --- FONCTIONS DE LA MODALE (Le coeur du clic) ---
+    // --- FONCTIONS DE LA MODALE (Les interactions) ---
     // ==============================================
 
     const modalOverlay = document.getElementById('modal-overlay');
@@ -206,19 +289,15 @@
     const closeBtn = document.querySelector('.close-btn');
 
     function displayModal(type) {
-        const titleElement = document.getElementById('modal-title');
-        const contentElement = modalContent;
-
         let title = '';
         let contentHTML = '';
 
-        // Contenu généré selon le type cliqué (pour la démonstration de fonctionnalité)
         switch(type) {
             case 'shop':
                 title = "Boutique en Ligne (E-commerce)";
                 contentHTML = `
-                    <h4 style="color: #e74c3c;">🛍️ Section Produit : Les Sneakers Pro Max</h4>
-                    <p style="font-size: 0.9em; color: #555;">[Image Placeholder : Mannequin portant des sneakers]</p>
+                    <h4 style="color: #e74c3c;">🛍️ Exemple de produit : Les Sneakers Pro Max</h4>
+                    <p>Nous gérons les images, les tailles et le panier.</p>
                     <div style="background: white; padding: 15px; border: 2px solid var(--primary-color); border-radius: 8px; margin-top: 20px;">
                         <strong class="text-bold">Nom du produit :</strong> Sneakers Pro Max <br>
                         <strong style="font-size: 1.5em;">Prix :</strong> 99,99 € <br><br>
@@ -229,11 +308,11 @@
             case 'portfolio':
                 title = "Portfolio Artistique / Photographe";
                 contentHTML = `
-                    <h4 style="color: var(--secondary-color);">🖼️ Galerie d'Images</h4>
+                    <h4 style="color: var(--secondary-color);">🖼️ Galerie d'images</h4>
                     <div class="feature-list" style="margin-top: 20px;">
-                        <div class="feature-item" style="flex-grow: 1; min-height: 150px; background: #ccc; border-radius: 5px;"></div>
-                        <div class="feature-item" style="flex-grow: 1; min-height: 150px; background: #aaa; border-radius: 5px;"></div>
-                        <div class="feature-item" style="flex-grow: 1; min-height: 150px; background: #bbb; border-radius: 5px;"></div>
+                        <button style="background: #ccc; padding: 15px; border-radius: 8px; width: 33%; cursor: pointer;">Image</button>
+                        <button style="background: #aaa; padding: 15px; border-radius: 8px; width: 33%; cursor: pointer;">Texte</button>
+                        <button style="background: #bbb; padding: 15px; border-radius: 8px; width: 33%; cursor: pointer;">Vidéo</button>
                     </div>
                      <p style="margin-top: 20px;">[Bouton CTA : Demander un devis / Voir la galerie complète]</p>
                 `;
@@ -241,7 +320,7 @@
             case 'local':
                 title = "Site de Commerce Local (Café/Restaurant)";
                 contentHTML = `
-                    <h4 style="color: var(--secondary-color);">🍽️ Menu et Horaires</h4>
+                    <h4 style="color: var(--secondary-color);">🍽️ Informations Complètes</h4>
                     <div style="background: #f9f9f9; padding: 15px; border-radius: 8px;">
                         <strong class="text-bold">🕒 Horaires :</strong> Du Lundi au Dimanche, de 7h à 20h.<br>
                         <strong class="text-bold">⭐ Menu spécialité du jour :</strong> Sandwich forestier <span style="color: var(--primary-color); font-weight: bold;">(Voir notre carte complète !)</span>
@@ -255,12 +334,13 @@
             const titleElement = document.getElementById('modal-title');
             const contentElement = modalContent;
 
-            // Remplissage du contenu et affichage de la modale
+            // Mise à jour du titre et du contenu généré
             switch(type) {
                 case 'shop': title = "Boutique en Ligne (E-commerce)"; break;
                 case 'portfolio': title = "Portfolio Artistique / Photographe"; break;
                 case 'local': title = "Site de Commerce Local (Café/Restaurant)"; break;
             }
+
             titleElement.textContent = title;
             contentElement.innerHTML = contentHTML;
             modalOverlay.style.display = 'flex'; 
@@ -274,5 +354,5 @@
 
 
     </script>
-</body >
+</body>
 </html>
