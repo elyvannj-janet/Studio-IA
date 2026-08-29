@@ -9,7 +9,7 @@
     <style>
         /* Variables de couleur */
         :root {
-            --primary-color: #4CAF50; /* Vert vif, succès */
+            --primary-color: #4CAF50; /* Vert vif, succès/gratuit */
             --secondary-color: #2980b9; /* Bleu Discord / Confiance */
             --text-dark: #333;
             --background-light: #ecf0f1;
@@ -60,7 +60,7 @@
             background-color: white;
             padding: 35px;
             border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Ombre plus douce et large */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
             margin-bottom: 40px;
             transition: transform 0.3s ease; /* Animation sur la section elle-même */
         }
@@ -79,39 +79,81 @@
         }
 
         /* ============================================== */
-        /* SECTION DES CARTE DE FONCTIONNALITÉS (Animations améliorées) */
+        /* SHOWCASE DES RÉALISATIONS (Les Nouveaux Exemples) */
         /* ============================================== */
-        .feature-list {
+        #showcases {
+            background-color: var(--background-light); /* Fond distinctif */
+            border-radius: 12px;
+        }
+
+        .showcase-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 25px; /* Espace un peu plus grand */
+            gap: 30px;
             justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .showcase-item {
+            background-color: #2c3e50; /* Fond sombre pour simuler un site */
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 30%; /* Trois par ligne */
+        }
+
+        /* Animation du showcase au survol */
+        .showcase-item:hover {
+             transform: scale(1.02);
+             box-shadow: 0 15px 30px rgba(41, 128, 217, 0.4); /* Ombre bleue au survol */
+        }
+
+        .showcase-item h4 {
+            color: #e74c3c;
+            margin-top: 5px;
+        }
+        .showcase-item p {
+             font-size: 0.9em;
+             color: rgba(255, 255, 255, 0.8);
+        }
+
+
+        /* ============================================== */
+        /* CARTE DE FONCTIONNALITÉS (Animation pour le reste) */
+        /* ============================================== */
+        #services .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            margin-top: 30px;
         }
 
         .feature-item {
             background: var(--background-light);
             padding: 25px;
             border-radius: 10px;
-            flex: 1 1 300px; /* Flex plus souple */
+            flex: 1 1 300px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
             cursor: pointer;
-            /* Animation clé ici ! */
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transition douce et agréable */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .feature-item:hover {
-            transform: scale(1.05) translateY(-8px); /* Agrandissement et soulèvement au survol */
-            box-shadow: 0 15px 30px rgba(41, 128, 217, 0.2); /* Ombre bleue pour l'effet "actif" */
+            transform: scale(1.05) translateY(-8px);
+            box-shadow: 0 15px 30px rgba(41, 128, 217, 0.2);
         }
 
+
         /* ============================================== */
-        /* CALL TO ACTION (Le bouton Discord) */
+        /* CTA et TÉMOIGNAGES (Mise en forme spécifique) */
         /* ============================================== */
         .cta-box {
-            background: linear-gradient(135deg, #e8f6fa 0%, #dcecf9 100%); /* Dégradé plus riche */
+            background: linear-gradient(135deg, #e8f6fa 0%, #dcecf9 100%);
             padding: 50px;
             text-align: center;
-            border: 4px solid var(--secondary-color); /* Bordure plus solide */
+            border: 4px solid var(--secondary-color);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
@@ -125,25 +167,25 @@
             display: inline-block;
             background-color: var(--secondary-color);
             color: white;
-            padding: 18px 40px; /* Plus grand et impactant */
+            padding: 18px 40px;
             text-decoration: none;
             border-radius: 50px;
             font-size: 1.3em;
             font-weight: bold;
-            /* Transitions pour un effet de survol parfait */
             transition: all 0.3s cubic-bezier(0.2, 1, 0.1, 1);
-            box-shadow: 0 6px 15px rgba(41, 128, 217, 0.4); /* Ombre initiale */
+            box-shadow: 0 6px 15px rgba(41, 128, 217, 0.4);
         }
 
+        /* Animation du bouton */
         .discord-button:hover {
             background-color: #1e67a8;
-            transform: scale(1.05) translateY(-3px); /* Effet de grandissement et soulèvement */
-            box-shadow: 0 12px 25px rgba(41, 128, 217, 0.6); /* Ombre plus forte au survol */
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 12px 25px rgba(41, 128, 217, 0.6);
         }
 
         /* Footer */
         footer {
-            background-color: #2c3e50; /* Couleur de fond sombre et professionnelle */
+            background-color: #2c3e50;
             color: white;
             text-align: center;
             padding: 25px;
@@ -151,10 +193,19 @@
             font-size: 1em;
         }
 
-        /* Responsive Design (Assure que les animations fonctionnent bien sur mobile) */
-        @media (max-width: 768px) {
-             .feature-item {
-                flex: 1 1 45%; /* Deux cartes par ligne sur tablette/mobile */
+        /* Responsive Design */
+        @media (max-width: 992px) {
+             .showcase-item {
+                width: calc(50% - 15px); /* Deux par ligne sur tablettes */
+            }
+        }
+         @media (max-width: 768px) {
+             header h1 {
+                 font-size: clamp(2em, 8vw, 3.5em);
+             }
+             /* Toutes les sections doivent gérer le flux en colonne */
+             .showcase-item, .feature-item {
+                width: 100%; 
             }
         }
 
@@ -178,7 +229,6 @@
             <p style="text-align: center; font-size: 1.2em; max-width: 800px; margin: 0 auto 40px;">Un script sur mesure est votre vitrine digitale ! Nous créons une page web unique, parfaitement adaptée à vos besoins (portfolio, petite boutique virtuelle, présentation...).</p>
 
             <div class="feature-list">
-                <!-- Les cartes ont maintenant un effet de survol très visible -->
                 <div class="feature-item">
                     <h3>🎨 Design Unique</h3>
                     <p>Des couleurs et une mise en page 100% adaptées à votre identité visuelle.</p>
@@ -191,8 +241,38 @@
                     <h3>🚀 Optimisation Mobile (Responsive)</h3>
                     <p>Votre site sera parfait et utilisable sur téléphones, tablettes et ordinateurs.</p>
                 </div>
-            </div >
+            </div>
         </section>
+
+        <!-- ============================================ -->
+        <!-- NOUVEAU : SHOWCASE DES RÉALISATIONS (PREUVE VISUELLE) -->
+        <!-- ============================================ -->
+        <section id="showcases">
+            <h2>🖼️ Quelques Exemples de Nos Réalisations</h2>
+            <p style="text-align: center; max-width: 900px; margin: -25px auto 40px;">Découvrez la diversité des projets que nous pouvons créer pour vous, du commerce au portfolio artistique.</p>
+
+            <div class="showcase-container">
+                <!-- Exemple 1 : E-commerce -->
+                <div class="showcase-item">
+                    <h4>👟 Boutique de Chaussures</h4>
+                    <p>Exemple d'e-commerce simple avec galerie produit et panier simulé.</p>
+                    <small style="display: block; margin-top: 10px;">(Focus : Visuel, Catalogue)</small>
+                </div>
+                <!-- Exemple 2 : Portfolio Créatif -->
+                <div class="showcase-item">
+                    <h4>📸 Photographe / Artiste</h4>
+                    <p>Exemple de portfolio avec galerie plein écran et présentation artistique.</p>
+                    <small style="display: block; margin-top: 10px;">(Focus : Image, Élégance)</small>
+                </div>
+                 <!-- Exemple 3 : Commerce Local -->
+                <div class="showcase-item">
+                    <h4>☕ Café / Restaurant</h4>
+                    <p>Exemple de page vitrine avec menu interactif et horaires mis à jour.</p>
+                     <small style="display: block; margin-top: 10px;">(Focus : Info, Réservation)</small>
+                </div>
+            </div>
+        </section>
+
 
         <!-- SECTION 2 : L'Incitation (Pourquoi nous choisir) -->
         <section id="gratuit">
@@ -212,10 +292,10 @@
             </a>
         </div>
 
-    </div>
+    </div >
 
-    <!-- FOOTER : Infos de bas de page (Année mise à jour) -->
-    <footer>
+    <!-- FOOTER : Infos de bas de page -->
+    <footer style="text-align: center; padding: 25px;">
         <p>&copy; Copyright Script Création Sur Mesure. Tous droits réservés | &copy; 2026</p>
     </footer>
 
