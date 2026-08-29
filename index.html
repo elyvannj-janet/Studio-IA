@@ -7,14 +7,15 @@
 
     <!-- CSS Intégré pour le style et les animations (LE CŒUR VISUEL CYBER) -->
     <style>
+        /* Variables de couleur */
         :root {
             --neon-blue: #00ffff; /* Bleu Cyan/Turquoise - Couleur principale du cyber */
             --secondary-color: #2980b9; 
             --text-dark: #e6e6fa; /* Mauve très clair pour le texte sur fond sombre */
-            --background-light: #1a202c; /* Fond très sombre, presque noir */
+            --background-light: #1a202c; 
         }
 
-        /* GLOBAL STYLING & TRANSITIONS (Animation de fond) */
+        /* GLOBAL STYLING & TRANSITIONS (Fond sombre cyber) */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -61,7 +62,7 @@
         }
 
         /* ============================================== */
-        /* ANIMATION DES CARTES DE FONCTIONNALITÉS */
+        /* ANIMATION DES CARTE DE FONCTIONNALITÉS */
         /* ============================================== */
         .feature-list {
             display: flex;
@@ -72,13 +73,13 @@
         }
 
         .feature-item {
-            background: rgba(17, 30, 50, 0.6); 
+            background: rgba(17, 30, 50, 0.6); /* Fond très foncé semi-transparent */
             padding: 20px;
             border-radius: 10px;
             margin: 5px;
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            border: 1px solid #3f526a; 
+            border: 1px solid #3f526a; /* Bordure sombre */
         }
 
         /* L'EFFET ÉLECTRIQUE MAGIQUE (Le Glow) */
@@ -110,7 +111,7 @@
 
         /* Effet de Glow sur le lien principal au survol */
         .dropdown:hover {
-             text-shadow: 0 0 8px rgba(0, 255, 255, 0.7); 
+             text-shadow: 0 0 8px rgba(0, 255, 255, 0.7); /* Lumière textuelle */
              color: white;
              transform: scale(1.1);
         }
@@ -139,7 +140,7 @@
         }
 
         /* ============================================== */
-        /* CTA ET BOUTON DISCORD (Le point de conversion) */
+        /* CTA & LIEN PARTENAIRE : Le point de conversion */
         /* ============================================== */
         .cta-box {
             background: linear-gradient(135deg, #12171e 0%, #0a0d13 100%); /* Fond noir profond */
@@ -155,29 +156,24 @@
             text-shadow: 0 0 10px #ff007f; /* Effet néon sur le titre principal */
         }
 
-        /* LE BOUTON PRINCIPAL (CTA) : L'Hyper-Animation Cyber */
-        .discord-button {
+        /* --- STYLES COMMUNS POUR TOUS LES BOUTONS CLICQUABLES CYBER ---*/
+        .clickable-btn {
             display: inline-block;
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 20px 45px;
             text-decoration: none;
-            border-radius: 50px;
-            font-size: 1.3em;
             font-weight: bold;
             transition: all 0.8s cubic-bezier(0.2, 1, 0.1, 1); 
             box-shadow: 0 6px 15px rgba(41, 128, 217, 0.5);
         }
 
-        /* L'Effet de déformation RGB au survol */
-        .discord-button:hover {
+        /* EFFET DE DÉFORMATION RGB AU SURVOL (GLOBAL POUR LES BOUTONS) */
+        .clickable-btn:hover {
             transform: scale(1.1) translateY(-8px) skewX(-3deg); /* Scale + Y offset + Skew pour la déformation */
-            background-color: #00ffff; /* Le bouton devient cyan au survol */
             box-shadow: 0 20px 50px rgba(76, 175, 80, 0.6), /* Aura verte (glow) */
                          0 0 80px #ff007f,   /* Grande aura rose/rouge pour l'électricité */
                          0 0 30px white;       /* Point blanc électrique ciblé */
             filter: brightness(1.2); 
         }
+
 
     </style>
 </head>
@@ -208,7 +204,8 @@
                     <h3 style="color: var(--neon-blue);">🛠️ Fonctionnalité Complète</h3>
                     <p>Intégration de formulaires, galeries d'images ou fonctionnalités interactives simples.</p>
                 </div>
-            </div >
+            </div>
+
         </section>
 
         <!-- SECTION 2 : Les Domaines d'Expertise (Le Mega Menu Cyber) -->
@@ -236,7 +233,7 @@
                         <a href="#" style="color: var(--neon-blue); text-decoration: none; display: block;">Localisation des contenus</a>
                         <a href="#" style="color: var(--neon-blue); text-decoration: none; display: block;">Adaptation Culturelle</a>
                     </div>
-                </div>
+                </div >
 
                 <div class="dropdown" role="menuitem">
                     <a href="#">🧠 IA & Paramètres Avancés</a>
@@ -245,12 +242,10 @@
                         <a href="#" style="color: var(--neon-blue); text-decoration: none; display: block;">Calculateur personnalisé (CTA)</a>
                         <a href="#" style="color: var(--neon-blue); text-decoration: none; display: block;">Interface Admin Sécurisée</a>
                     </div>
-                </div>
-
-            </div>
+                </div >
+            </div >
 
         </section>
-
 
         <!-- SECTION 3 : L'Appel à l'Action (Le CTA) -->
         <div class="cta-box">
@@ -258,20 +253,32 @@
             <p style="font-size: 1.2em; margin-bottom: 25px;">Pour commencer, rejoignez notre serveur Discord ! C'est là que nous discutons de vos idées et où nous vous fournirons le lien pour démarrer la création gratuite.</p>
             
             <!-- LE BOUTON PRINCIPAL (CTA) -->
-            <a href="https://discord.gg/MrjnbEaDDf" class="discord-button" target="_blank">
+            <a href="https://discord.gg/MrjnbEaDDf" class="discord-button clickable-btn" target="_blank">
                 ➡️ Rejoindre notre Communauté Discord ⬅️
             </a>
         </div>
 
-    </div> <!-- Fin du conteneur principal -->
-
+    </div >
 
     <!-- ============================================ -->
-    <!-- PARTENAIRE : Affichage du Lien de Partenaire (Section simple et discrète) -->
+    <!-- PARTENAIRE : AFFICHAGE DU LIEN DE PARTENAIRE (Section simple et discrète) -->
     <!-- ============================================ -->
     <footer class="partner-section">
-        <p>Le partenariat technique et la communauté de référence est assuré par <a href="https://discord.gg/MrjnbEaDDf" target="_blank" class="partner-link">Discord</a>.</p>
+        <p>Le partenariat technique de confiance est assuré par <a href="https://discord.gg/MrjnbEaDDf" target="_blank" class="clickable-btn partner-link">Discord</a>.</p>
     </footer>
 
-</body >
+<!-- Le modal n'est plus nécessaire car nous avons retiré les vitrines, mais le laisse vide pour la structure -->
+<div id="modal-overlay" style="display:none;"></div>
+
+
+<script>
+    // ===============================================
+    // --- FONCTIONS DE DÉMARRAGE ET ÉVÉNEMENTS ---
+    // ===============================================
+
+    function setupEventListeners() {
+        console.log("--- Script Initialisé : Interface opérationnelle ---");
+    }
+</script>
+</body>
 </html>
