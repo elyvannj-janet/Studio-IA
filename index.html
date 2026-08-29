@@ -8,31 +8,38 @@
     <!-- CSS Intégré pour le style et les animations (LE CŒUR VISUEL CYBER) -->
     <style>
         :root {
-            --neon-blue: #00ffff; /* Bleu Cyan/Turquoise - Couleur principale du cyber */
-            --secondary-color: #2980b9; 
-            --text-dark: #e6e6fa; /* Mauve très clair pour le texte sur fond sombre */
+            --neon-blue: #00ffff; /* Bleu Cyan/Turquoise */
+            --secondary-color: #2980b9; /* Bleu foncé de confiance */
+            --text-dark: #e6e6fa; 
             --background-light: #1a1e24; /* Fond très sombre, presque noir */
         }
 
-        /* GLOBAL STYLING & TRANSITIONS */
+        /* GENERAL STYLING & TRANSITIONS */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            color: var(--text-dark);
-            background-color: var(--background-light);
+            color: #f0f0f0;
+            background: linear-gradient(135deg, #0a0a23, #1f1f4e); /* Fond sombre */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0,0 L100,100 M100,0 L0,100" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>');
         }
 
         /* ============================================== */
-        /* HEADER : Style d'accroche Cyberpunk */
+        /* HEADER : Style d'accroche */
         /* ============================================== */
         header {
-            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent et sombre */
+            background-color: rgba(0, 0, 0, 0.8); 
             color: white;
             padding: 40px 20px;
             text-align: center;
-            box-shadow: 0 6px 30px rgba(0, 255, 255, 0.2); /* Ombre néon */
+            box-shadow: 0 6px 30px rgba(0, 255, 255, 0.2); 
         }
 
         header h1 {
@@ -61,7 +68,7 @@
         }
 
         /* ============================================== */
-        /* ANIMATION GÉNÉRALE DES CARTES DE FONCTIONNALITÉS */
+        /* ANIMATION DES CARTES DE FONCTIONNALITÉS */
         /* ============================================== */
         .feature-list {
             display: flex;
@@ -78,7 +85,7 @@
             margin: 5px;
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            border: 1px solid #3f526a; 
+            border: 1px solid #3f526a; /* Bordure sombre */
         }
 
         /* L'EFFET ÉLECTRIQUE MAGIQUE (Le Glow) */
@@ -111,7 +118,7 @@
 
         /* Effet de Glow sur le lien principal au survol */
         .dropdown:hover {
-             text-shadow: 0 0 8px rgba(0, 255, 255, 0.7); 
+             text-shadow: 0 0 8px rgba(0, 255, 255, 0.7); /* Lumière textuelle */
              color: white;
              transform: scale(1.1);
         }
@@ -132,24 +139,25 @@
             display: block;
             animation: fadeInDropCyber 0.3s ease forwards; /* Animation d'apparition */
         }
-        
+
         @keyframes fadeInDropCyber {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+
         /* ============================================== */
-        /* CTA ET BOUTON DISCORD (LE POINT DE CONVERSION) - MISE À JOUR DU STYLING ! */
+        /* CTA ET BOUTON DISCORD (LE POINT DE CONVERSION) */
         /* ============================================== */
         .cta-box {
-            background: linear-gradient(135deg, #0a0d13 0%, #12171e 100%); /* Fond noir profond */
+            background: linear-gradient(135deg, #12171e 0%, #0a0d13 100%); /* Fond noir profond */
             padding: 50px;
             text-align: center;
             border: 4px solid var(--neon-blue); /* Bordure néon cyan */
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Halo général sur le bloc */
         }
 
-        /* Modification du texte au dessus du bouton */
+        /* Le titre au dessus du bouton doit être blanc pur (style console) */
         .cta-box h3 {
             color: white; /* Texte blanc pur pour contraster avec le fond noir */
             text-shadow: 0 0 10px #ff007f; /* Effet néon sur le titre principal */
@@ -165,7 +173,6 @@
             border-radius: 50px;
             font-size: 1.3em;
             font-weight: bold;
-            /* Transition très lente et fluide */
             transition: all 0.8s cubic-bezier(0.2, 1, 0.1, 1); 
             box-shadow: 0 6px 15px rgba(41, 128, 217, 0.5);
         }
@@ -177,7 +184,7 @@
             box-shadow: 0 20px 50px rgba(76, 175, 80, 0.6), /* Aura verte (glow) */
                          0 0 80px #ff007f,   /* Grande aura rose/rouge pour l'électricité */
                          0 0 30px white;       /* Point blanc électrique ciblé */
-            filter: brightness(1.2); /* Augmente la luminosité globale au survol */
+            filter: brightness(1.2); 
         }
 
     </style>
@@ -237,7 +244,6 @@
                         <a href="#" style="color: var(--neon-blue); text-decoration: none; display: block;">Localisation des contenus</a>
                         <a href="#" style="color: var(--neon-blue); text-decoration: none; display: block;">Adaptation Culturelle</a>
                     </div>
-                </div >
 
                 <div class="dropdown" role="menuitem">
                     <a href="#">🧠 IA & Paramètres Avancés</a>
@@ -246,42 +252,29 @@
                         <a href="#" style="color: var(--neon-blue); text-decoration: none; display: block;">Calculateur personnalisé (CTA)</a>
                         <a href="#" style="color: var(--neon-blue); text-decoration: none; display: block;">Interface Admin Sécurisée</a>
                     </div>
-                </div >
+                </div>
             </div >
         </section>
-
 
         <!-- SECTION 3 : L'Appel à l'Action (Le CTA) -->
         <div class="cta-box">
             <h3 data-visible="false" style="color: white;">📡 Le Point de Contrôle Central</h3>
             <p style="font-size: 1.2em; margin-bottom: 25px;">Pour commencer, rejoignez notre serveur Discord ! C'est là que nous discutons de vos idées et où nous vous fournirons le lien pour démarrer la création gratuite.</p>
             
-            <!-- LIEN DISCORD MIS À JOUR -->
-            <a href="https://discord.gg/dzHV8vr8Qx" class="discord-button" target="_blank">
+            <!-- LIEN DISCORD MIS À JOUR ET CORRIGÉ -->
+            <a href="https://discord.gg/MrjnbEaDDf" class="discord-button" target="_blank">
                 ➡️ Rejoindre notre Communauté Discord ⬅️
             </a>
         </div>
 
-    </div >
+    </div> <!-- Fin du conteneur principal -->
 
-    <!-- FOOTER : Infos de bas de page -->
-    <footer style="background-color: #1a202c; border-top: 3px solid var(--neon-blue);">
-        <p>&copy; Copyright Script Création Sur Mesure. Tous droits réservés | &copy; 2026</p>
+    <!-- ============================================ -->
+    <!-- PARTENAIRE : AFFICHAGE DU LIEN DE PARTENAIRE (SECTION VISIBLE) -->
+    <!-- ============================================ -->
+    <footer class="partner-section">
+        <p>Le partenariat technique et la communauté de référence est assuré par <a href="https://discord.gg/MrjnbEaDDf" target="_blank">Discord</a>.</p>
     </footer>
 
-<!-- NOTE : La modale est laissée en place car elle pourrait être utile si vous voulez réactiver les démonstrations plus tard. -->
-<div id="modal-overlay" style="display:none;"></div>
-
-
-<script>
-    // ===============================================
-    // --- FONCTIONNALITÉS : Événements et Modale (Maintenues pour la cohérence) ---
-    // ===============================================
-
-    function setupEventListeners() {
-        console.log("--- Scripts Cyber Initialisés ---");
-    }
-
-</script>
 </body>
 </html>
